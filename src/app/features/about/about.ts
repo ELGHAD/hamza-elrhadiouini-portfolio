@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
+import { CtaButton } from '../../shared/components/cta-button/cta-button';
 
 @Component({
   selector: 'app-about',
-  imports: [],
+  standalone: true,
+  imports: [CtaButton],
   templateUrl: './about.html',
-  styleUrl: './about.scss',
+  styleUrl: './about.scss'
 })
-export class About {}
+export class AboutComponent {}
