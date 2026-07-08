@@ -1,1 +1,18 @@
-<p>cta-button works!</p>
+@if (routerLinkTo) {
+  <a [routerLink]="routerLinkTo" class="cta-button cta-button--{{ variant }}">
+    {{ label }}
+  </a>
+} @else if (href) {
+  
+    [href]="href"
+    [target]="external ? '_blank' : null"
+    [rel]="external ? 'noopener' : null"
+    class="cta-button cta-button--{{ variant }}"
+  >
+    {{ label }}
+  </a>
+} @else {
+  <button type="button" class="cta-button cta-button--{{ variant }}">
+    {{ label }}
+  </button>
+}

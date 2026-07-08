@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-skill-tag',
-  imports: [],
-  templateUrl: './skill-tag.html',
-  styleUrl: './skill-tag.scss',
+  standalone: true,
+  templateUrl: './skill-tag.component.html',
+  styleUrl: './skill-tag.component.scss'
 })
-export class SkillTag {}
+export class SkillTagComponent {
+  @Input() label = '';
+}

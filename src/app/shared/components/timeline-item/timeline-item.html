@@ -1,1 +1,11 @@
-<p>timeline-item works!</p>
+<div class="timeline-item" [class.timeline-item--highlight]="highlight">
+  <div class="timeline-item__marker"></div>
+  <div class="timeline-item__content">
+    <div class="timeline-item__header">
+      <h3 class="timeline-item__title">{{ title }}</h3>
+      <span class="timeline-item__period">{{ period }}</span>
+    </div>
+    <p class="timeline-item__subtitle">{{ subtitle }}</p>
+    <ng-content></ng-content>
+  </div>
+</div>

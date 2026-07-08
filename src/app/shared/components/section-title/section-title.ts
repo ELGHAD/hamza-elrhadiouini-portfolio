@@ -1,9 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-section-title',
-  imports: [],
-  templateUrl: './section-title.html',
-  styleUrl: './section-title.scss',
+  standalone: true,
+  templateUrl: './section-title.component.html',
+  styleUrl: './section-title.component.scss'
 })
-export class SectionTitle {}
+export class SectionTitleComponent {
+  @Input() title = '';
+  @Input() subtitle = '';
+}
