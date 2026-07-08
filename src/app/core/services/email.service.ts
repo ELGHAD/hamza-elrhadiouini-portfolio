@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import emailjs from '@emailjs/browser';
 
 export interface ContactFormData {
   name: string;
@@ -8,9 +9,20 @@ export interface ContactFormData {
 
 @Injectable({ providedIn: 'root' })
 export class EmailService {
-  // EmailJS integration will be wired here once you create your EmailJS account
+  private readonly serviceId = 'service_r7onrxq';
+  private readonly templateId = 'template_g5igah6';
+  private readonly publicKey = 'pOu0FlhvGBN4cJMBa';
+
   async sendMessage(data: ContactFormData): Promise<void> {
-    console.log('Sending message (placeholder):', data);
-    // Real implementation added in Contact step
+    await emailjs.send(
+      this.serviceId,
+      this.templateId,
+      {
+        name: data.name,
+        email: data.email,
+        message: data.message
+      },
+      this.publicKey
+    );
   }
 }
