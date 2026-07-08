@@ -36,7 +36,7 @@ export const routes: Routes = [
   {
     path: 'experience',
     loadComponent: () =>
-      import('./features/experience/experience').then(m => m.Experience),
+      import('./features/experience/experience').then(m => m.ExperienceComponent),
     title: 'Experience — Hamza Elrhadiouini'
   },
   {

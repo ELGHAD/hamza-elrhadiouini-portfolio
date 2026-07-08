@@ -1,1 +1,23 @@
-<p>experience works!</p>
+<section class="experience">
+  <h1 class="experience__title">Experience</h1>
+  <p class="experience__intro">
+    Three internships across different companies and backend ecosystems —
+    building real-world software under professional supervision.
+  </p>
+
+  <div class="experience__timeline">
+    @for (entry of experience; track entry.id) {
+      <app-timeline-item
+        [title]="entry.role + ' — ' + entry.company"
+        [subtitle]="entry.type + ' · ' + entry.location"
+        [period]="entry.period"
+      >
+        <ul class="experience__responsibilities">
+          @for (item of entry.responsibilities; track item) {
+            <li>{{ item }}</li>
+          }
+        </ul>
+      </app-timeline-item>
+    }
+  </div>
+</section>

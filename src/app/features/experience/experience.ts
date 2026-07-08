@@ -1,9 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { ExperienceService } from '../../core/services/experience.service';
+import { TimelineItemComponent } from '../../shared/components/timeline-item/timeline-item';
 
 @Component({
   selector: 'app-experience',
-  imports: [],
+  standalone: true,
+  imports: [TimelineItemComponent],
   templateUrl: './experience.html',
-  styleUrl: './experience.scss',
+  styleUrl: './experience.scss'
 })
-export class Experience {}
+export class ExperienceComponent {
+  private experienceService = inject(ExperienceService);
+
+  experience = this.experienceService.getAll();
+}
