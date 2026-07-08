@@ -1,0 +1,26 @@
+<header class="site-header">
+  <div class="site-header__inner">
+    <a routerLink="/" class="site-header__logo" (click)="closeMenu()">ELGH4D</a>
+
+    <button
+      class="site-header__menu-btn"
+      type="button"
+      (click)="toggleMenu()"
+      [attr.aria-expanded]="isMenuOpen"
+      aria-label="Toggle navigation menu"
+    >
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav class="site-header__nav" [class.site-header__nav--open]="isMenuOpen">
+      <a routerLink="/about" routerLinkActive="active" (click)="closeMenu()">About</a>
+      <a routerLink="/skills" routerLinkActive="active" (click)="closeMenu()">Skills</a>
+      <a routerLink="/projects" routerLinkActive="active" (click)="closeMenu()">Projects</a>
+      <a routerLink="/experience" routerLinkActive="active" (click)="closeMenu()">Experience</a>
+      <a routerLink="/education" routerLinkActive="active" (click)="closeMenu()">Education</a>
+      <a routerLink="/certifications" routerLinkActive="active" (click)="closeMenu()">Certifications</a>
+      <a routerLink="/contact" routerLinkActive="active" (click)="closeMenu()">Contact</a>
+      <app-theme-toggle></app-theme-toggle>
+    </nav>
+  </div>
+</header>
