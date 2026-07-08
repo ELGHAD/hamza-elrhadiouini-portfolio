@@ -39,22 +39,17 @@ export const routes: Routes = [
       import('./features/experience/experience').then(m => m.ExperienceComponent),
     title: 'Experience — Hamza Elrhadiouini'
   },
-  {
-    path: 'education',
-    loadComponent: () =>
-      import('./features/education/education').then(m => m.{
+ {
   path: 'education',
   loadComponent: () =>
     import('./features/education/education').then(m => m.EducationComponent),
   title: 'Education — Hamza Elrhadiouini'
-},),
-    title: 'Education — Hamza Elrhadiouini'
-  },
+},
   {
     path: 'certifications',
     loadComponent: () =>
       import('./features/certifications/certifications').then(
-        m => m.Certifications
+        m => m.CertificationsComponent
       ),
     title: 'Certifications — Hamza Elrhadiouini'
   },

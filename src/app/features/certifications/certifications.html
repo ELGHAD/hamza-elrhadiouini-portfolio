@@ -1,1 +1,51 @@
-<p>certifications works!</p>
+<section class="certifications">
+  <h1 class="certifications__title">Certifications</h1>
+
+  <div class="certifications__badges">
+    @for (issuer of issuers; track issuer) {
+      <span class="certifications__badge">{{ issuer }}</span>
+    }
+  </div>
+
+  <h2 class="certifications__section-title">Featured</h2>
+  <div class="certifications__grid">
+    @for (cert of featured; track cert.id) {
+      <div class="certifications__card">
+        <p class="certifications__card-name">{{ cert.name }}</p>
+        <p class="certifications__card-meta">{{ cert.issuer }} &middot; {{ cert.year }}</p>
+      </div>
+    }
+  </div>
+
+  <div class="certifications__tracks">
+    <button type="button" class="certifications__track-toggle" (click)="toggleTrack('backend')">
+      {{ isExpanded('backend') ? '&minus;' : '+' }} Meta Back-End Developer — included coursework
+    </button>
+    @if (isExpanded('backend')) {
+      <ul class="certifications__sub-list">
+        @for (cert of backendTrack; track cert.id) {
+          <li>{{ cert.name }} <span class="certifications__sub-year">({{ cert.year }})</span></li>
+        }
+      </ul>
+    }
+
+   <button type="button" class="certifications__track-toggle" (click)="toggleTrack('backend')">
+  <span class="certifications__track-icon">{{ isExpanded('backend') ? '−' : '+' }}</span>
+  Meta Back-End Developer — included coursework
+</button>
+    @if (isExpanded('frontend')) {
+      <ul class="certifications__sub-list">
+        @for (cert of frontendTrack; track cert.id) {
+          <li>{{ cert.name }} <span class="certifications__sub-year">({{ cert.year }})</span></li>
+        }
+      </ul>
+    }
+  </div>
+
+  <h2 class="certifications__section-title">Additional coursework</h2>
+  <ul class="certifications__additional-list">
+    @for (cert of additional; track cert.id) {
+      <li>{{ cert.name }} — <span class="certifications__additional-issuer">{{ cert.issuer }}</span> ({{ cert.year }})</li>
+    }
+  </ul>
+</section>
