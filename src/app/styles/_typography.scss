@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap');
+
+:root {
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-text);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-body);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+h1 {
+  font-size: 2rem;
+
+  @include tablet {
+    font-size: 2.75rem;
+  }
+
+  @include laptop {
+    font-size: 3.25rem;
+  }
+}
+
+h2 {
+  font-size: 1.5rem;
+
+  @include tablet {
+    font-size: 1.9rem;
+  }
+}
+
+code, .mono {
+  font-family: var(--font-mono);
+}
+
+a {
+  color: inherit;
+}
+
+p {
+  color: var(--color-text-secondary);
+}

@@ -4,8 +4,8 @@ import { ThemeService } from '../../../core/services/theme.service';
 @Component({
   selector: 'app-theme-toggle',
   standalone: true,
-  templateUrl: './theme-toggle.component.html',
-  styleUrl: './theme-toggle.component.scss'
+  templateUrl: './theme-toggle.html',
+  styleUrl: './theme-toggle.scss'
 })
 export class ThemeToggleComponent {
   themeService = inject(ThemeService);

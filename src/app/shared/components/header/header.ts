@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { ThemeToggleComponent } from '../theme-toggle/theme-toggle.component';
+import { ThemeToggleComponent } from '../theme-toggle/theme-toggle';
 
 @Component({
   selector: 'app-header',
   standalone: true,
   imports: [RouterLink, RouterLinkActive, ThemeToggleComponent],
-  templateUrl: './header.component.html',
-  styleUrl: './header.component.scss'
+  templateUrl: './header.html',
+  styleUrl: './header.scss'
 })
 export class HeaderComponent {
   isMenuOpen = false;

@@ -1,18 +1,7 @@
 @if (routerLinkTo) {
-  <a [routerLink]="routerLinkTo" class="cta-button cta-button--{{ variant }}">
-    {{ label }}
-  </a>
+  <a [routerLink]="routerLinkTo" class="cta-button" [ngClass]="'cta-button--' + variant">{{ label }}</a>
 } @else if (href) {
-  
-    [href]="href"
-    [target]="external ? '_blank' : null"
-    [rel]="external ? 'noopener' : null"
-    class="cta-button cta-button--{{ variant }}"
-  >
-    {{ label }}
-  </a>
+  <a [href]="href" [attr.target]="external ? '_blank' : null" [attr.rel]="external ? 'noopener' : null" class="cta-button" [ngClass]="'cta-button--' + variant">{{ label }}</a>
 } @else {
-  <button type="button" class="cta-button cta-button--{{ variant }}">
-    {{ label }}
-  </button>
+  <button type="button" class="cta-button" [ngClass]="'cta-button--' + variant">{{ label }}</button>
 }

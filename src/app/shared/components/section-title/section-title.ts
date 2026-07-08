@@ -3,8 +3,8 @@ import { Component, Input } from '@angular/core';
 @Component({
   selector: 'app-section-title',
   standalone: true,
-  templateUrl: './section-title.component.html',
-  styleUrl: './section-title.component.scss'
+  templateUrl: './section-title.html',
+  styleUrl: './section-title.scss'
 })
 export class SectionTitleComponent {
   @Input() title = '';

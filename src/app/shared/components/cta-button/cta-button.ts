@@ -1,14 +1,14 @@
 import { Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-cta-button',
-  standalone: true,
-  imports: [RouterLink],
-  templateUrl: './cta-button.component.html',
-  styleUrl: './cta-button.component.scss'
+  imports: [RouterLink, NgClass],
+  templateUrl: './cta-button.html',
+  styleUrl: './cta-button.scss'
 })
-export class CtaButtonComponent {
+export class CtaButton {
   @Input() label = '';
   @Input() routerLinkTo?: string;
   @Input() href?: string;

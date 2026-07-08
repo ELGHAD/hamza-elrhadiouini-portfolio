@@ -3,8 +3,8 @@ import { Component, Input } from '@angular/core';
 @Component({
   selector: 'app-skill-tag',
   standalone: true,
-  templateUrl: './skill-tag.component.html',
-  styleUrl: './skill-tag.component.scss'
+  templateUrl: './skill-tag.html',
+  styleUrl: './skill-tag.scss'
 })
 export class SkillTagComponent {
   @Input() label = '';

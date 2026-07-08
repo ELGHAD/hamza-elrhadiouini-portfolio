@@ -1,0 +1,54 @@
+<section class="hero">
+  <div class="hero__avatar">
+    <img src="src/assets/images/avatar.svg" alt="Illustrated avatar of Hamza Elrhadiouini" />
+  </div>
+  <p class="hero__greeting">Hi, I'm Hamza — ELGH4D</p>
+  <h1 class="hero__title">Backend Engineer &amp; AI Systems Builder</h1>
+  <p class="hero__subtitle">
+    I design and ship backend systems and applied AI features — from
+    Spring Boot microservices to production RAG platforms.
+  </p>
+  <div class="hero__actions">
+    <app-cta-button label="View projects" routerLinkTo="/projects" variant="primary"></app-cta-button>
+    <app-cta-button label="Resume" href="assets/resume/Hamza_Elrhadiouini_CV.pdf" [external]="true" variant="secondary"></app-cta-button>
+    <app-cta-button label="Connect" routerLinkTo="/contact" variant="secondary"></app-cta-button>
+  </div>
+</section>
+
+<section class="narrative">
+  <div class="narrative__item">
+    <h3>Previously</h3>
+    <p>Two backend internships — Symfony/PHP at ALTEN Fès, then Spring Boot at RATITEC.</p>
+  </div>
+  <div class="narrative__item">
+    <h3>Currently</h3>
+    <p>Building AI Copilot, a production RAG platform, as a Software Engineer Intern at ALTEN Rabat.</p>
+  </div>
+  <div class="narrative__item">
+    <h3>Goal</h3>
+    <p>A backend engineering role with real ownership of AI-powered features.</p>
+  </div>
+</section>
+
+<section class="featured-projects">
+  <h2 class="featured-projects__title">Featured projects</h2>
+  <div class="featured-projects__grid">
+    @for (project of featuredProjects; track project.id) {
+      <app-project-card [project]="project"></app-project-card>
+    }
+  </div>
+</section>
+
+<section class="skills-preview">
+  <p class="skills-preview__label">Core stack</p>
+  <div class="skills-preview__tags">
+    @for (skill of previewSkills; track skill) {
+      <app-skill-tag [label]="skill"></app-skill-tag>
+    }
+  </div>
+</section>
+
+<section class="contact-cta">
+  <p>Let's talk about an opportunity.</p>
+  <app-cta-button label="Contact me" routerLinkTo="/contact" variant="primary"></app-cta-button>
+</section>
