@@ -1,9 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { EducationService } from '../../core/services/education.service';
+import { TimelineItemComponent } from '../../shared/components/timeline-item/timeline-item';
 
 @Component({
   selector: 'app-education',
-  imports: [],
+  standalone: true,
+  imports: [TimelineItemComponent],
   templateUrl: './education.html',
-  styleUrl: './education.scss',
+  styleUrl: './education.scss'
 })
-export class Education {}
+export class EducationComponent {
+  private educationService = inject(EducationService);
+
+  education = this.educationService.getAll();
+}

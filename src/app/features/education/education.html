@@ -1,1 +1,14 @@
-<p>education works!</p>
+<section class="education">
+  <h1 class="education__title">Education</h1>
+
+  <div class="education__timeline">
+    @for (entry of education; track entry.id) {
+      <app-timeline-item
+        [title]="entry.degree"
+        [subtitle]="entry.institution + ' · ' + entry.location + (entry.specialization ? ' · ' + entry.specialization : '')"
+        [period]="entry.period"
+        [highlight]="entry.highlight ?? false"
+      ></app-timeline-item>
+    }
+  </div>
+</section>

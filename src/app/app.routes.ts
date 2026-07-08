@@ -42,7 +42,12 @@ export const routes: Routes = [
   {
     path: 'education',
     loadComponent: () =>
-      import('./features/education/education').then(m => m.Education),
+      import('./features/education/education').then(m => m.{
+  path: 'education',
+  loadComponent: () =>
+    import('./features/education/education').then(m => m.EducationComponent),
+  title: 'Education — Hamza Elrhadiouini'
+},),
     title: 'Education — Hamza Elrhadiouini'
   },
   {
