@@ -16,7 +16,7 @@ export const routes: Routes = [
   {
     path: 'skills',
     loadComponent: () =>
-      import('./features/skills/skills').then(m => m.Skills),
+      import('./features/skills/skills').then(m => m.SkillsComponent),
     title: 'Skills — Hamza Elrhadiouini'
   },
   {

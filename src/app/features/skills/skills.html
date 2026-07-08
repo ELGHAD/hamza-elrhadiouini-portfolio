@@ -1,1 +1,20 @@
-<p>skills works!</p>
+<section class="skills">
+  <h1 class="skills__title">Skills</h1>
+  <p class="skills__intro">
+    A versatile backend-first stack, spanning multiple frameworks and
+    ecosystems, with a growing specialization in applied AI systems.
+  </p>
+
+  <div class="skills__categories">
+    @for (category of categories; track category) {
+      <div class="skills__category">
+        <h2 class="skills__category-title">{{ category }}</h2>
+        <div class="skills__tags">
+          @for (skill of grouped[category]; track skill.name) {
+            <app-skill-tag [label]="skill.name"></app-skill-tag>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</section>
