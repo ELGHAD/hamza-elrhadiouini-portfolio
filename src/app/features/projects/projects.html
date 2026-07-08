@@ -1,1 +1,45 @@
-<p>projects works!</p>
+<section class="projects">
+  <h1 class="projects__title">Projects</h1>
+
+  <div class="projects__tabs" role="tablist">
+    <button
+      type="button"
+      role="tab"
+      class="projects__tab"
+      [class.projects__tab--active]="activeTab() === 'professional'"
+      (click)="setTab('professional')"
+    >
+      Professional
+    </button>
+    <button
+      type="button"
+      role="tab"
+      class="projects__tab"
+      [class.projects__tab--active]="activeTab() === 'personal'"
+      (click)="setTab('personal')"
+    >
+      Personal
+    </button>
+  </div>
+
+  @if (activeTab() === 'professional') {
+    <p class="projects__note">
+      Real internships backed by an official convention, at ALTEN and RATITEC.
+    </p>
+  }
+
+  <div class="projects__grid">
+    @for (project of mainProjects(); track project.id) {
+      <app-project-card [project]="project"></app-project-card>
+    }
+  </div>
+
+  @if (compactProjects().length > 0) {
+    <h2 class="projects__compact-title">Additional projects</h2>
+    <div class="projects__compact-grid">
+      @for (project of compactProjects(); track project.id) {
+        <app-project-card [project]="project"></app-project-card>
+      }
+    </div>
+  }
+</section>

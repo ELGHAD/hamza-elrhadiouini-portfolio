@@ -22,7 +22,7 @@ export const routes: Routes = [
   {
     path: 'projects',
     loadComponent: () =>
-      import('./features/projects/projects').then(m => m.Projects),
+      import('./features/projects/projects').then(m => m.ProjectsComponent),
     title: 'Projects — Hamza Elrhadiouini'
   },
   {

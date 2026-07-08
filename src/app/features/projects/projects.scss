@@ -1,0 +1,76 @@
+@import '../../styles/mixins';
+
+.projects {
+  max-width: 1200px;
+  margin-inline: auto;
+  padding: var(--space-2xl) var(--space-sm);
+
+  &__title {
+    text-align: center;
+    margin-bottom: var(--space-lg);
+  }
+
+  &__tabs {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-sm);
+  }
+
+  &__tab {
+    background: transparent;
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    padding: 0.6rem 1.5rem;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+    }
+
+    &--active {
+      background: var(--color-accent);
+      border-color: var(--color-accent);
+      color: var(--color-bg);
+    }
+  }
+
+  &__note {
+    text-align: center;
+    font-size: 0.9rem;
+    margin: 0 0 var(--space-lg);
+  }
+
+  &__grid {
+    display: grid;
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+
+    @include tablet {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include laptop {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  &__compact-title {
+    font-size: 1.1rem;
+    margin: 0 0 var(--space-md);
+    color: var(--color-text-secondary);
+  }
+
+  &__compact-grid {
+    display: grid;
+    gap: var(--space-sm);
+
+    @include tablet {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+}
