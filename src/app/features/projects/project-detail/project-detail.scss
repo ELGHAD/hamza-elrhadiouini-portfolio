@@ -1,0 +1,62 @@
+.project-detail {
+  max-width: 760px;
+  margin-inline: auto;
+  padding: var(--space-2xl) var(--space-sm);
+
+  &__back {
+    display: inline-block;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin-bottom: var(--space-lg);
+
+    &:hover {
+      color: var(--color-accent);
+    }
+  }
+
+  &__title {
+    margin: 0 0 var(--space-xs);
+  }
+
+  &__tagline {
+    font-size: 1.1rem;
+    margin: 0 0 var(--space-xl);
+  }
+
+  &__section {
+    margin-bottom: var(--space-lg);
+
+    h2 {
+      font-size: 1.15rem;
+      color: var(--color-accent);
+      margin: 0 0 var(--space-xs);
+    }
+
+    p, li {
+      font-size: 0.95rem;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 1.25rem;
+    }
+  }
+
+  &__stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+  }
+
+  &__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-top: var(--space-xl);
+  }
+
+  &--not-found {
+    text-align: center;
+  }
+}

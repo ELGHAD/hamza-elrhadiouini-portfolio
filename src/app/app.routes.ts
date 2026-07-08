@@ -29,7 +29,7 @@ export const routes: Routes = [
     path: 'projects/:id',
     loadComponent: () =>
       import('./features/projects/project-detail/project-detail').then(
-        m => m.ProjectDetail
+        m => m.ProjectDetailComponent
       ),
     title: 'Project Details — Hamza Elrhadiouini'
   },

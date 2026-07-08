@@ -1,1 +1,62 @@
-<p>project-detail works!</p>
+@if (project(); as p) {
+  <section class="project-detail">
+    <a routerLink="/projects" class="project-detail__back">&larr; Back to projects</a>
+
+    <h1 class="project-detail__title">{{ p.title }}</h1>
+    <p class="project-detail__tagline">{{ p.tagline }}</p>
+
+    <div class="project-detail__section">
+      <h2>The challenge</h2>
+      <p>{{ p.challenge }}</p>
+    </div>
+
+    <div class="project-detail__section">
+      <h2>The solution</h2>
+      <p>{{ p.solution }}</p>
+    </div>
+
+    <div class="project-detail__section">
+      <h2>Key features</h2>
+      <ul>
+        @for (feature of p.keyFeatures; track feature) {
+          <li>{{ feature }}</li>
+        }
+      </ul>
+    </div>
+
+    <div class="project-detail__section">
+      <h2>Business value</h2>
+      <p>{{ p.businessValue }}</p>
+    </div>
+
+    @if (p.collaboration) {
+      <div class="project-detail__section">
+        <h2>Collaboration</h2>
+        <p>{{ p.collaboration }}</p>
+      </div>
+    }
+
+    <div class="project-detail__section">
+      <h2>Tech stack</h2>
+      <div class="project-detail__stack">
+        @for (tech of p.techStack; track tech) {
+          <app-skill-tag [label]="tech"></app-skill-tag>
+        }
+      </div>
+    </div>
+
+    <div class="project-detail__links">
+      @if (p.githubUrl) {
+        <app-cta-button label="View on GitHub" [href]="p.githubUrl" [external]="true" variant="primary"></app-cta-button>
+      }
+      @if (p.liveDemoUrl) {
+        <app-cta-button label="Live demo" [href]="p.liveDemoUrl" [external]="true" variant="secondary"></app-cta-button>
+      }
+    </div>
+  </section>
+} @else {
+  <section class="project-detail project-detail--not-found">
+    <p>Project not found.</p>
+    <a routerLink="/projects">Back to projects</a>
+  </section>
+}
