@@ -1,0 +1,41 @@
+<section class="language-choice" aria-labelledby="language-choice-title">
+  <app-logo class="language-choice__logo"></app-logo>
+
+  <p class="language-choice__name">Hamza El Rhadiouini</p>
+  <p class="language-choice__role">
+    <span lang="fr">Ingénieur logiciel Full-Stack &amp; IA</span>
+    <span aria-hidden="true">·</span>
+    <span lang="en">Full-Stack &amp; AI Software Engineer</span>
+  </p>
+
+  <h1 id="language-choice-title">
+    <span lang="fr">Choisissez votre langue</span>
+    <span class="language-choice__divider" aria-hidden="true">/</span>
+    <span lang="en">Choose your language</span>
+  </h1>
+
+  <nav class="language-choice__options" aria-label="Langue / Language">
+    <a class="language-option" [routerLink]="localeService.path('', 'fr')" lang="fr" hreflang="fr">
+      <span class="language-option__code" aria-hidden="true">FR</span>
+      <span class="language-option__text">
+        <strong>Français</strong>
+        <span>Continuer en français</span>
+      </span>
+      <span class="language-option__arrow" aria-hidden="true">→</span>
+    </a>
+    <a class="language-option" [routerLink]="localeService.path('', 'en')" lang="en" hreflang="en">
+      <span class="language-option__code" aria-hidden="true">EN</span>
+      <span class="language-option__text">
+        <strong>English</strong>
+        <span>Continue in English</span>
+      </span>
+      <span class="language-option__arrow" aria-hidden="true">→</span>
+    </a>
+  </nav>
+
+  <noscript>
+    <p class="language-choice__noscript">
+      <a href="fr/" lang="fr">Continuer en français</a> · <a href="en/" lang="en">Continue in English</a>
+    </p>
+  </noscript>
+</section>

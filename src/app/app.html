@@ -1,10 +1,14 @@
 <a class="skip-link" href="#main-content">
   {{ localeService.locale() === 'fr' ? 'Aller au contenu' : 'Skip to content' }}
 </a>
-<app-header></app-header>
+@if (!isLanguageChooser()) {
+  <app-header></app-header>
+}
 
 <main id="main-content" class="app-main" tabindex="-1">
   <router-outlet></router-outlet>
 </main>
 
-<app-footer></app-footer>
+@if (!isLanguageChooser()) {
+  <app-footer></app-footer>
+}
