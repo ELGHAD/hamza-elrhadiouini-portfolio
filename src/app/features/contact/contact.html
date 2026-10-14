@@ -1,56 +1,76 @@
-<section class="contact">
-  <h1 class="contact__title">Contact</h1>
-  <p class="contact__intro">
-    Have an opportunity or a question? I'd love to hear from you.
-  </p>
+<section class="contact-page" aria-labelledby="contact-title">
+  <header class="contact-page__intro">
+    <p class="eyebrow">Contact</p>
+    <h1 id="contact-title">
+      {{
+        localeService.locale() === 'fr'
+          ? 'Parlons de votre projet.'
+          : 'Let’s talk about your project.'
+      }}
+    </h1>
+    <p>
+      {{
+        localeService.locale() === 'fr'
+          ? 'Je suis disponible immédiatement. Décrivez votre besoin en quelques lignes, je vous réponds par e-mail.'
+          : 'I’m available immediately. Describe what you need in a few lines and I’ll reply by email.'
+      }}
+    </p>
+  </header>
 
-  <form class="contact__form" [formGroup]="form" (ngSubmit)="onSubmit()">
-    <div class="contact__field">
-      <label for="name">Name</label>
-      <input id="name" type="text" formControlName="name" />
-      @if (form.controls.name.invalid && form.controls.name.touched) {
-        <span class="contact__error">Please enter your name.</span>
+  <div class="contact-layout">
+    <app-contact-form idPrefix="contact" />
+
+    <aside
+      class="contact-details"
+      [attr.aria-label]="localeService.locale() === 'fr' ? 'Coordonnées' : 'Contact details'"
+    >
+      <div class="contact-details__block">
+        <p class="eyebrow">{{ localeService.locale() === 'fr' ? 'E-mail' : 'Email' }}</p>
+        <a
+          class="contact-details__email"
+          [href]="'mailto:' + profile.email[localeService.locale()]"
+          >{{ profile.email[localeService.locale()] }}</a
+        >
+        <button class="copy-button" type="button" (click)="copyEmail()">
+          @if (copyState() === 'copied') {
+            <span aria-hidden="true">✓</span>
+            {{ localeService.locale() === 'fr' ? 'E-mail copié' : 'Email copied' }}
+          } @else {
+            {{ localeService.locale() === 'fr' ? 'Copier l’e-mail' : 'Copy email' }}
+          }
+        </button>
+        <p class="contact-details__copy-status" aria-live="polite" aria-atomic="true">
+          {{ copyStatus() }}
+        </p>
+      </div>
+
+      <div class="contact-details__block">
+        <p class="eyebrow">{{ localeService.locale() === 'fr' ? 'Disponibilité' : 'Availability' }}</p>
+        <p>{{ profile.availability[localeService.locale()] }}</p>
+      </div>
+
+      <nav
+        class="contact-details__links"
+        [attr.aria-label]="
+          localeService.locale() === 'fr' ? 'Liens professionnels' : 'Professional links'
+        "
+      >
+        <a
+          [href]="profile.linkedin[localeService.locale()]"
+          target="_blank"
+          rel="noopener noreferrer"
+          >LinkedIn <span aria-hidden="true">↗</span></a
+        >
+        <a [href]="profile.github[localeService.locale()]" target="_blank" rel="noopener noreferrer"
+          >GitHub <span aria-hidden="true">↗</span></a
+        >
+      </nav>
+
+      @if (localeService.locale() === 'fr' && profile.cvFr.status === 'verified') {
+        <a class="button button--outline" [href]="profile.cvFr.fr" download>CV français ↓</a>
+      } @else if (localeService.locale() === 'en' && profile.cvEn.status === 'verified') {
+        <a class="button button--outline" [href]="profile.cvEn.en" download>English resume ↓</a>
       }
-    </div>
-
-    <div class="contact__field">
-      <label for="email">Email</label>
-      <input id="email" type="email" formControlName="email" />
-      @if (form.controls.email.invalid && form.controls.email.touched) {
-        <span class="contact__error">Please enter a valid email.</span>
-      }
-    </div>
-
-    <div class="contact__field">
-      <label for="message">Message</label>
-      <textarea id="message" rows="5" formControlName="message"></textarea>
-      @if (form.controls.message.invalid && form.controls.message.touched) {
-        <span class="contact__error">Message should be at least 10 characters.</span>
-      }
-    </div>
-
-    <button type="submit" class="contact__submit" [disabled]="state() === 'sending'">
-      @if (state() === 'sending') {
-        Sending...
-      } @else {
-        Send message
-      }
-    </button>
-
-    @if (state() === 'success') {
-      <p class="contact__status contact__status--success">Message sent — thank you! I'll get back to you soon.</p>
-    }
-    @if (state() === 'error') {
-      <p class="contact__status contact__status--error">Something went wrong. Please try emailing me directly instead.</p>
-    }
-  </form>
-
-  <div class="contact__alt">
-    <p>Or reach me directly:</p>
-    <div class="contact__links">
-      <a href="mailto:hamelrhadiouini@gmail.com">Email</a>
-      <a href="https://github.com/ELGHAD" target="_blank" rel="noopener">GitHub</a>
-      <a href="https://ma.linkedin.com/in/elrhadiouini-hamza-64ba04202" target="_blank" rel="noopener">LinkedIn</a>
-    </div>
+    </aside>
   </div>
 </section>

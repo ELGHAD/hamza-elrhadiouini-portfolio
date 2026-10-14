@@ -1,20 +1,157 @@
-<section class="skills">
-  <h1 class="skills__title">Skills</h1>
-  <p class="skills__intro">
-    A versatile backend-first stack, spanning multiple frameworks and
-    ecosystems, with a growing specialization in applied AI systems.
-  </p>
+<section class="skills-page" aria-labelledby="skills-title">
+  <header class="skills-page__intro" appReveal>
+    <p class="eyebrow">{{ localeService.locale() === 'fr' ? 'Technologies' : 'Technology' }}</p>
+    <h1 id="skills-title">{{ localeService.locale() === 'fr' ? 'Compétences' : 'Skills' }}</h1>
+    <p>
+      {{
+        localeService.locale() === 'fr'
+          ? 'Toutes les technologies et notions de mes projets, de mes stages et de mes certifications. Survolez-en une pour voir où je l’ai utilisée.'
+          : 'Every technology and concept from my projects, internships and certifications. Hover over one to see where I used it.'
+      }}
+    </p>
+  </header>
 
-  <div class="skills__categories">
-    @for (category of categories; track category) {
-      <div class="skills__category">
-        <h2 class="skills__category-title">{{ category }}</h2>
-        <div class="skills__tags">
-          @for (skill of grouped[category]; track skill.name) {
-            <app-skill-tag [label]="skill.name"></app-skill-tag>
+  <section
+    class="skills-filters"
+    [attr.aria-label]="localeService.locale() === 'fr' ? 'Filtres de compétences' : 'Skill filters'"
+    appReveal
+  >
+    <div
+      class="skills-filters__categories"
+      role="group"
+      [attr.aria-label]="
+        localeService.locale() === 'fr' ? 'Filtrer par catégorie' : 'Filter by category'
+      "
+    >
+      <button
+        type="button"
+        [class.is-active]="activeCategory() === 'all'"
+        [attr.aria-pressed]="activeCategory() === 'all'"
+        (click)="activeCategory.set('all')"
+      >
+        {{ localeService.locale() === 'fr' ? 'Toutes' : 'All' }}
+      </button>
+      @for (category of categories; track category.id) {
+        <button
+          type="button"
+          [class.is-active]="activeCategory() === category.id"
+          [attr.aria-pressed]="activeCategory() === category.id"
+          (click)="activeCategory.set(category.id)"
+        >
+          {{ category.title[localeService.locale()] }}
+        </button>
+      }
+    </div>
+    <div class="skills-filters__search">
+      <label for="skill-search">{{
+        localeService.locale() === 'fr' ? 'Rechercher une technologie' : 'Search technologies'
+      }}</label>
+      <input
+        id="skill-search"
+        type="search"
+        [value]="searchTerm()"
+        (input)="searchTerm.set($any($event.target).value)"
+        [placeholder]="
+          localeService.locale() === 'fr' ? 'Nom ou projet associé' : 'Name or related project'
+        "
+      />
+      <button type="button" (click)="resetFilters()">
+        {{ localeService.locale() === 'fr' ? 'Effacer' : 'Clear' }}
+      </button>
+    </div>
+    <div class="skills-filters__meta">
+      <p aria-live="polite">
+        {{ visibleSkills().length }}
+        {{ localeService.locale() === 'fr' ? 'technologies' : 'technologies' }}
+      </p>
+    </div>
+  </section>
+
+  @if (visibleSkills().length) {
+    <!-- Two columns filled shortest-first in skills.ts; one column in strict order on phones. -->
+    <div class="skills-categories" [class.skills-categories--single]="columns().length === 1" appReveal>
+      @for (column of columns(); track $index) {
+        <div class="skills-categories__column">
+          @for (entry of column; track entry.category.id) {
+            @let category = entry.category;
+            @let index = entry.index;
+            @let skills = entry.skills;
+            <section
+              class="skill-category"
+              [attr.data-category]="category.id"
+              [attr.aria-labelledby]="'skill-category-' + category.id"
+            >
+              <header class="skill-category__heading">
+                <span class="skill-category__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" focusable="false">
+                    @for (path of iconPaths(category.id); track $index) {
+                      <path [attr.d]="path" />
+                    }
+                  </svg>
+                </span>
+                <div class="skill-category__title">
+                  <span class="skill-category__index" aria-hidden="true"
+                    >{{ index + 1 < 10 ? '0' : '' }}{{ index + 1 }}</span
+                  >
+                  <h2 [id]="'skill-category-' + category.id">
+                    {{ category.title[localeService.locale()] }}
+                  </h2>
+                </div>
+                <p class="skill-category__count">{{ countLabel(skills) }}</p>
+              </header>
+
+              <ul class="skill-category__list">
+                @for (skill of skills; track skill.id) {
+                  <li>
+                    <span
+                      class="skill-chip"
+                      [class.is-active]="activeSkill()?.id === skill.id"
+                      tabindex="0"
+                      [attr.aria-label]="
+                        skillName(skill) +
+                        '. ' +
+                        evidenceText(skill)
+                      "
+                      (mouseenter)="activeSkill.set(skill)"
+                      (mouseleave)="clearActive(skill)"
+                      (focus)="activeSkill.set(skill)"
+                      (blur)="clearActive(skill)"
+                    >
+                      {{ skillName(skill) }}
+                    </span>
+                  </li>
+                }
+              </ul>
+
+              <!-- Visual echo of the chip's aria-label; screen readers already hear it on focus. -->
+              <div
+                class="skill-category__evidence"
+                [class.is-filled]="activeSkill()?.category === category.id"
+                aria-hidden="true"
+              >
+                @if (activeSkill(); as active) {
+                  @if (active.category === category.id) {
+                    <span class="skill-category__evidence-label">{{ skillName(active) }}</span>
+                    <span>{{ evidenceText(active) }}</span>
+                  } @else {
+                    <span class="skill-category__evidence-hint">{{ evidenceHint() }}</span>
+                  }
+                } @else {
+                  <span class="skill-category__evidence-hint">{{ evidenceHint() }}</span>
+                }
+              </div>
+            </section>
           }
         </div>
-      </div>
-    }
-  </div>
+      }
+    </div>
+  } @else {
+    <p class="skills-empty" role="status">
+      {{
+        localeService.locale() === 'fr'
+          ? 'Aucune technologie ne correspond à la recherche.'
+          : 'No technologies match your search.'
+      }}
+    </p>
+  }
 </section>

@@ -1,42 +1,51 @@
-import { Component, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { EmailService } from '../../core/services/email.service';
+import { Component, inject, OnDestroy, PLATFORM_ID, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { LocaleService } from '../../core/services/locale.service';
+import { PROFILE } from '../../core/data/profile.data';
+import { ContactFormComponent } from '../../shared/components/contact-form/contact-form';
 
-type SubmitState = 'idle' | 'sending' | 'success' | 'error';
+type CopyState = 'idle' | 'copied' | 'error';
 
 @Component({
   selector: 'app-contact',
-  standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ContactFormComponent],
   templateUrl: './contact.html',
-  styleUrl: './contact.scss'
+  styleUrl: './contact.scss',
 })
-export class ContactComponent {
-  private fb = inject(FormBuilder);
-  private emailService = inject(EmailService);
+export class ContactComponent implements OnDestroy {
+  private readonly platformId = inject(PLATFORM_ID);
+  readonly localeService = inject(LocaleService);
+  readonly profile = PROFILE;
+  readonly copyState = signal<CopyState>('idle');
+  private copyResetTimer?: number;
 
-  state = signal<SubmitState>('idle');
-
-  form = this.fb.nonNullable.group({
-    name: ['', [Validators.required, Validators.minLength(2)]],
-    email: ['', [Validators.required, Validators.email]],
-    message: ['', [Validators.required, Validators.minLength(10)]]
-  });
-
-  async onSubmit(): Promise<void> {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-
-    this.state.set('sending');
+  async copyEmail(): Promise<void> {
+    if (!isPlatformBrowser(this.platformId)) return;
     try {
-      await this.emailService.sendMessage(this.form.getRawValue());
-      this.state.set('success');
-      this.form.reset();
-    } catch (error) {
-      console.error('Failed to send message:', error);
-      this.state.set('error');
+      await navigator.clipboard.writeText(this.profile.email[this.localeService.locale()]);
+      this.copyState.set('copied');
+    } catch {
+      this.copyState.set('error');
     }
+    window.clearTimeout(this.copyResetTimer);
+    this.copyResetTimer = window.setTimeout(() => this.copyState.set('idle'), 4000);
+  }
+
+  copyStatus(): string {
+    const french = this.localeService.locale() === 'fr';
+    switch (this.copyState()) {
+      case 'copied':
+        return french ? 'Adresse e-mail copiée.' : 'Email address copied.';
+      case 'error':
+        return french
+          ? 'Copie indisponible. Sélectionnez l’adresse ci-dessus.'
+          : 'Copy unavailable. Select the address above.';
+      default:
+        return '';
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (isPlatformBrowser(this.platformId)) window.clearTimeout(this.copyResetTimer);
   }
 }

@@ -1,23 +1,183 @@
-<section class="experience">
-  <h1 class="experience__title">Experience</h1>
-  <p class="experience__intro">
-    Three internships across different companies and backend ecosystems —
-    building real-world software under professional supervision.
-  </p>
+<section
+  class="experience-page"
+  aria-labelledby="experience-title"
+  [style.--timeline-progress]="timelineProgress()"
+>
+  <header class="experience-page__intro" appReveal>
+    <p class="eyebrow">{{ text({ fr: 'Parcours', en: 'Journey' }) }}</p>
+    <h1 id="experience-title">
+      {{ text({ fr: 'Cinq ans d’école, et le terrain en parallèle.', en: 'Five years of school, with real work alongside.' }) }}
+    </h1>
+    <p>
+      {{
+        text({
+          fr: 'De 2021 à 2026, l’EMSI d’un côté, et de l’autre des stages et une mission client qui m’ont fait passer des exercices aux systèmes qui tournent pour de vrai. Voici l’histoire, dans l’ordre.',
+          en: 'From 2021 to 2026: EMSI on one side, and on the other, internships and a client engagement that took me from coursework to systems that actually run. Here is the story, in order.',
+        })
+      }}
+    </p>
+  </header>
 
-  <div class="experience__timeline">
-    @for (entry of experience; track entry.id) {
-      <app-timeline-item
-        [title]="entry.role + ' — ' + entry.company"
-        [subtitle]="entry.type + ' · ' + entry.location"
-        [period]="entry.period"
+  <div class="story-legend" aria-hidden="true" appReveal>
+    <span><i class="story-legend__rail"></i>{{ text({ fr: 'Formation EMSI', en: 'EMSI degree' }) }}</span>
+    <span><i class="story-legend__bar"></i>{{ text({ fr: 'Période d’expérience', en: 'Experience period' }) }}</span>
+    <span><i class="story-legend__today"></i>{{ text({ fr: 'Aujourd’hui', en: 'Today' }) }}</span>
+  </div>
+
+  <div class="story" [style.grid-template-rows]="gridRows">
+    <!-- Decorative time structure: the cards below carry all the content. -->
+    @for (tick of years; track tick.year) {
+      <span class="story__year" [style.grid-row]="tick.row" aria-hidden="true">{{ tick.year }}</span>
+    }
+
+    <div class="story__rail" [style.grid-row]="'1 / ' + (totalRows + 1)" aria-hidden="true">
+      <span class="story__rail-fill"></span>
+
+    </div>
+
+    <!-- EMSI phases: labelled sections of the academic rail. -->
+    @for (phase of railPhases; track phase.id) {
+      <span
+        class="story__phase"
+        [style.grid-row]="phase.rowStart + ' / ' + phase.rowEnd"
+        aria-hidden="true"
+        ><span>{{ text(phase.label) }}</span></span
       >
-        <ul class="experience__responsibilities">
-          @for (item of entry.responsibilities; track item) {
-            <li>{{ item }}</li>
+    }
+
+    @for (segment of segments; track segment.id) {
+      <span
+        class="story__segment"
+        [class.is-ongoing]="segment.ongoing"
+        [class.is-active]="activeId() === segment.id"
+        [style.grid-row]="segment.rowStart + ' / ' + segment.rowEnd"
+        [style.grid-column]="segment.column"
+        aria-hidden="true"
+        ><b>{{ segment.number }}</b></span
+      >
+    }
+
+    <span class="story__today" [style.grid-row]="todayRow" aria-hidden="true">
+      <span>{{ text({ fr: 'Auj.', en: 'Today' }) }}</span>
+    </span>
+
+    @for (chapter of chapters; track chapter.id) {
+      <article
+        class="chapter"
+        [class.chapter--milestone]="chapter.kind !== 'experience'"
+        [class.is-active]="activeId() === chapter.id"
+        [id]="chapter.id"
+        [style.grid-row]="chapter.row"
+        [attr.aria-labelledby]="chapter.id + '-title'"
+        (mouseenter)="activeId.set(chapter.id)"
+        (mouseleave)="activeId.set(null)"
+        appReveal
+      >
+        <p class="chapter__kicker">
+          <span class="chapter__number">{{ chapter.number < 10 ? '0' : '' }}{{ chapter.number }}</span>
+          <span>{{ text(chapter.experience?.chapter ?? chapter.phase?.chapter ?? chapter.milestone!.chapter) }}</span>
+        </p>
+
+        @if (chapter.experience; as entry) {
+          <h2 [id]="chapter.id + '-title'">{{ text(entry.role) }}</h2>
+          <p class="chapter__meta">
+            <span class="chapter__period">{{ text(entry.period) }}</span>
+            <span>{{ entry.company }} · {{ text(entry.location) }}</span>
+            <span class="chapter__type">{{ text(entry.type) }}</span>
+          </p>
+          <p class="chapter__story">{{ text(entry.story) }}</p>
+          <details class="chapter__details">
+            <summary>{{ text({ fr: 'Ce que j’ai livré', en: 'What I delivered' }) }}</summary>
+            <ul>
+              @for (item of entry.responsibilities; track $index) {
+                <li>{{ text(item) }}</li>
+              }
+            </ul>
+          </details>
+          <ul class="chapter__stack" [attr.aria-label]="text({ fr: 'Technologies', en: 'Technologies' })">
+            @for (tech of entry.stack; track tech) {
+              <li>{{ tech }}</li>
+            }
+          </ul>
+        } @else if (chapter.phase; as phase) {
+          <h2 [id]="chapter.id + '-title'">{{ text(phase.title!) }}</h2>
+          <p class="chapter__meta">
+            <span class="chapter__period">{{ text(phase.years) }}</span>
+            <span>{{ emsi.institution }} · {{ phase.semesters }}</span>
+          </p>
+          <p class="chapter__story">{{ text(phase.story!) }}</p>
+          @if (phase.note; as note) {
+            <p class="chapter__note">{{ text(note) }}</p>
           }
-        </ul>
-      </app-timeline-item>
+          <div class="curriculum">
+            <p class="curriculum__title">{{ text({ fr: 'Au programme', en: 'Curriculum' }) }}</p>
+            <dl class="curriculum__grid">
+              @for (module of phase.modules; track $index) {
+                <div class="curriculum__module">
+                  <dt>{{ text(module.title) }}</dt>
+                  <dd>
+                    @for (entry of module.items; track $index) {
+                      <span>{{ text(entry) }}</span>
+                    }
+                  </dd>
+                </div>
+              }
+            </dl>
+          </div>
+        } @else if (chapter.milestone; as milestone) {
+          <h2 [id]="chapter.id + '-title'">{{ text(milestone.title) }}</h2>
+          <p class="chapter__meta">
+            <span class="chapter__period">{{ text(milestone.period) }}</span>
+            <span>{{ text(milestone.meta) }}</span>
+          </p>
+          <p class="chapter__story">{{ text(milestone.story) }}</p>
+        }
+
+        @if (chapter.project; as project) {
+          <a class="chapter__project" [routerLink]="localeService.path('projects/' + project.id)">
+            <span class="chapter__project-label">{{ text({ fr: 'Projet associé', en: 'Related project' }) }}</span>
+            <strong>{{ text(project.title) }}</strong>
+            <span>{{ text(project.summary) }}</span>
+            <span class="chapter__project-cta" aria-hidden="true">{{ text({ fr: 'Lire l’étude de cas', en: 'Read the case study' }) }} ↗</span>
+          </a>
+        }
+      </article>
     }
   </div>
+
+  <section class="next-chapter" aria-labelledby="next-title" appReveal>
+    <div class="next-chapter__copy">
+      <p class="eyebrow">{{ text({ fr: 'Et maintenant', en: 'What’s next' }) }}</p>
+      <h2 id="next-title">{{ text({ fr: 'Le prochain chapitre s’écrit avec vous.', en: 'Let’s write the next chapter together.' }) }}</h2>
+      <p>
+        {{
+          text({
+            fr: 'Ingénieur d’État diplômé, je suis disponible immédiatement, au Maroc comme en France.',
+            en: 'A state-certified engineer, I am available immediately, in Morocco or France.',
+          })
+        }}
+      </p>
+      <div class="next-chapter__actions">
+        <a class="button button--primary" [routerLink]="localeService.path('contact')"
+          >{{ text({ fr: 'Me contacter', en: 'Get in touch' }) }} <span aria-hidden="true">↗</span></a
+        >
+        <a class="button" [routerLink]="localeService.path('projects')">{{ text({ fr: 'Voir les projets', en: 'See the projects' }) }}</a>
+      </div>
+    </div>
+
+    <div class="next-chapter__languages">
+      <h3 id="languages-title">{{ text({ fr: 'Langues de travail', en: 'Working languages' }) }}</h3>
+      <ul aria-labelledby="languages-title">
+        @for (language of languages; track language.code) {
+          <li>
+            <span class="next-chapter__native" [attr.lang]="language.code" [attr.dir]="language.code === 'ar' ? 'rtl' : null">{{ language.name }}</span>
+            @if (language.name !== text(language.label)) {
+              <span class="next-chapter__label">{{ text(language.label) }}</span>
+            }
+          </li>
+        }
+      </ul>
+      <p>{{ languageNote() }}</p>
+    </div>
+  </section>
 </section>

@@ -30,12 +30,24 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-     
+      # Read from repository variables, or from secrets if defined there instead.
+      - name: Generate EmailJS environment
+        env:
+          EMAILJS_SERVICE_ID: ${{ vars.EMAILJS_SERVICE_ID || secrets.EMAILJS_SERVICE_ID }}
+          EMAILJS_TEMPLATE_ID: ${{ vars.EMAILJS_TEMPLATE_ID || secrets.EMAILJS_TEMPLATE_ID }}
+          EMAILJS_PUBLIC_KEY: ${{ vars.EMAILJS_PUBLIC_KEY || secrets.EMAILJS_PUBLIC_KEY }}
+        run: npm run env:emailjs -- --require
+
+      - name: Check publishable content
+        run: npm run check:content
+
+      # Open Graph image and icons, rendered with the runner's preinstalled Chrome.
+      - name: Generate social images and icons
+        run: npm run generate:images
+
+      # postbuild hook: 404.html, sitemap.xml, robots.txt, .nojekyll and audit of every page.
       - name: Build for production
         run: npm run build
-
-      - name: Add 404 fallback for SPA routing
-        run: cp dist/portfolio/browser/index.html dist/portfolio/browser/404.html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

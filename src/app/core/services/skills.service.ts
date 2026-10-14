@@ -1,20 +1,27 @@
 import { Injectable } from '@angular/core';
-import { Skill, SkillCategory } from '../models/skill.model';
-import { SKILLS } from '../data/skills.data';
+import { Skill, SkillCategory, SkillCategoryId } from '../models/skill.model';
+import { SKILLS, SKILL_CATEGORIES } from '../data/skills.data';
 
 @Injectable({ providedIn: 'root' })
 export class SkillsService {
-  private readonly skills: Skill[] = SKILLS;
+  private readonly skills: Skill[] = SKILLS.filter((skill) => skill.status === 'verified');
 
   getAll(): Skill[] {
     return this.skills;
   }
 
-  getGroupedByCategory(): Record<SkillCategory, Skill[]> {
-    return this.skills.reduce((acc, skill) => {
-      if (!acc[skill.category]) acc[skill.category] = [];
-      acc[skill.category].push(skill);
-      return acc;
-    }, {} as Record<SkillCategory, Skill[]>);
+  getCategories(): SkillCategory[] {
+    return SKILL_CATEGORIES;
+  }
+
+  getGroupedByCategory(): Record<SkillCategoryId, Skill[]> {
+    return this.skills.reduce(
+      (acc, skill) => {
+        if (!acc[skill.category]) acc[skill.category] = [];
+        acc[skill.category].push(skill);
+        return acc;
+      },
+      {} as Record<SkillCategoryId, Skill[]>,
+    );
   }
 }

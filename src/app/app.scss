@@ -1,3 +1,21 @@
 .app-main {
-  min-height: calc(100vh - 200px);
+  min-height: calc(100svh - 12rem);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.skip-link {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 1000;
+  padding: 0.75rem 1rem;
+  transform: translateY(-150%);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
 }
