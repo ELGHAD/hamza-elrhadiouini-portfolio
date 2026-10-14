@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { LocaleService } from './core/services/locale.service';
+import { SeoService } from './core/services/seo.service';
 import { HeaderComponent } from './shared/components/header/header';
 import { FooterComponent } from './shared/components/footer/footer';
 
@@ -8,6 +10,12 @@ import { FooterComponent } from './shared/components/footer/footer';
   standalone: true,
   imports: [RouterOutlet, HeaderComponent, FooterComponent],
   templateUrl: './app.html',
-  styleUrl: './app.scss'
+  styleUrl: './app.scss',
 })
-export class App {}
+export class App {
+  readonly localeService = inject(LocaleService);
+
+  constructor() {
+    inject(SeoService).init();
+  }
+}

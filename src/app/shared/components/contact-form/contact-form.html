@@ -1,0 +1,129 @@
+<form
+  class="contact-form"
+  [formGroup]="form"
+  (ngSubmit)="onSubmit()"
+  novalidate
+  [attr.aria-label]="localeService.locale() === 'fr' ? 'Formulaire de contact' : 'Contact form'"
+>
+  <p class="contact-form__hint">
+    {{
+      localeService.locale() === 'fr'
+        ? 'Tous les champs sont obligatoires.'
+        : 'All fields are required.'
+    }}
+  </p>
+
+  <div class="contact-form__field">
+    <label [attr.for]="fieldId('name')">{{
+      localeService.locale() === 'fr' ? 'Nom' : 'Name'
+    }}</label>
+    <input
+      [id]="fieldId('name')"
+      type="text"
+      formControlName="name"
+      autocomplete="name"
+      required
+      [attr.maxlength]="limits.name"
+      [attr.aria-invalid]="showError('name')"
+      [attr.aria-describedby]="showError('name') ? fieldId('name-error') : null"
+    />
+    @if (showError('name')) {
+      <span class="contact-form__error" [id]="fieldId('name-error')">{{ fieldError('name') }}</span>
+    }
+  </div>
+
+  <div class="contact-form__field">
+    <label [attr.for]="fieldId('email')">{{
+      localeService.locale() === 'fr' ? 'Adresse e-mail' : 'Email address'
+    }}</label>
+    <input
+      [id]="fieldId('email')"
+      type="email"
+      formControlName="email"
+      autocomplete="email"
+      inputmode="email"
+      required
+      [attr.maxlength]="limits.email"
+      [attr.aria-invalid]="showError('email')"
+      [attr.aria-describedby]="showError('email') ? fieldId('email-error') : null"
+    />
+    @if (showError('email')) {
+      <span class="contact-form__error" [id]="fieldId('email-error')">{{ fieldError('email') }}</span>
+    }
+  </div>
+
+  <div class="contact-form__field">
+    <label [attr.for]="fieldId('message')">{{
+      localeService.locale() === 'fr' ? 'Votre message' : 'Your message'
+    }}</label>
+    <textarea
+      [id]="fieldId('message')"
+      rows="6"
+      formControlName="message"
+      required
+      [attr.maxlength]="limits.message"
+      [attr.aria-invalid]="showError('message')"
+      [attr.aria-describedby]="showError('message') ? fieldId('message-error') : null"
+    ></textarea>
+    @if (showError('message')) {
+      <span class="contact-form__error" [id]="fieldId('message-error')">{{ fieldError('message') }}</span>
+    }
+  </div>
+
+  <div class="contact-form__honeypot" aria-hidden="true">
+    <label [attr.for]="fieldId('website')">Website</label>
+    <input
+      [id]="fieldId('website')"
+      type="text"
+      formControlName="website"
+      tabindex="-1"
+      autocomplete="off"
+    />
+  </div>
+
+  <button
+    class="button button--primary contact-form__submit"
+    type="submit"
+    [disabled]="state() === 'sending'"
+    [attr.aria-busy]="state() === 'sending'"
+  >
+    @if (state() === 'sending') {
+      {{ localeService.locale() === 'fr' ? 'Envoi en cours…' : 'Sending…' }}
+    } @else {
+      {{ localeService.locale() === 'fr' ? 'Envoyer le message' : 'Send message' }}
+      <span aria-hidden="true">↗</span>
+    }
+  </button>
+
+  <!-- Always in the DOM so screen readers pick up every change of state. -->
+  <div class="contact-form__announcements" aria-live="polite" aria-atomic="true">
+    @if (state() === 'success') {
+      <p class="contact-form__success">
+        {{
+          localeService.locale() === 'fr'
+            ? 'Message envoyé. Merci, je vous répondrai dès que possible.'
+            : 'Message sent. Thank you, I’ll get back to you as soon as I can.'
+        }}
+      </p>
+    } @else if (state() === 'fallback') {
+      <p class="contact-form__notice">
+        {{
+          localeService.locale() === 'fr'
+            ? failureReason() === 'send'
+              ? 'L’envoi automatique a échoué. Votre message est conservé :'
+              : 'L’envoi automatique n’est pas disponible pour le moment. Votre message est conservé :'
+            : failureReason() === 'send'
+              ? 'Automatic delivery failed. Your message is still here:'
+              : 'Automatic delivery is not available right now. Your message is still here:'
+        }}
+        <a [href]="mailtoHref()">{{
+          localeService.locale() === 'fr'
+            ? 'l’envoyer depuis votre messagerie'
+            : 'send it from your email app'
+        }}</a>
+      </p>
+    } @else if (state() === 'error') {
+      <p class="contact-form__error">{{ errorMessage() }}</p>
+    }
+  </div>
+</form>

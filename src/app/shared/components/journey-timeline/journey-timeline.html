@@ -1,0 +1,86 @@
+<div class="journey">
+  <div class="journey__chart" aria-hidden="true" appReveal>
+    <span class="journey__label journey__label--axis"></span>
+    <div class="journey__axis">
+      @for (tick of years(); track tick.year) {
+        <span class="journey__year" [style.left.%]="tick.left">{{ tick.year }}</span>
+      }
+    </div>
+
+    <span class="journey__label journey__label--education">{{ text({ fr: 'Formation', en: 'Education' }) }}</span>
+    <div class="journey__track journey__track--education">
+      <div
+        class="journey__bar journey__bar--education"
+        [style.left.%]="educationBar().left"
+        [style.width.%]="educationBar().width"
+      >
+        <span>{{ text(education().school) }} · {{ text({ fr: 'Ingénieur d’État', en: 'State engineering degree' }) }}</span>
+      </div>
+    </div>
+
+    <span class="journey__label journey__label--work">{{ text({ fr: 'Expérience', en: 'Experience' }) }}</span>
+    <div class="journey__track journey__track--work" [style.--lanes]="laneCount()">
+      @for (segment of segments(); track segment.entry.id) {
+        <div
+          class="journey__bar journey__bar--work"
+          [class.is-ongoing]="segment.ongoing"
+          [class.is-active]="activeId() === segment.entry.id"
+          [style.left.%]="segment.left"
+          [style.width.%]="segment.width"
+          [style.--lane]="segment.lane"
+          [style.--order]="segment.number"
+          (mouseenter)="activeId.set(segment.entry.id)"
+          (mouseleave)="activeId.set(null)"
+        >
+          <span class="journey__badge">{{ segment.number }}</span>
+        </div>
+      }
+    </div>
+
+    <!-- Year grid and "today" line drawn across every track. -->
+    <div class="journey__overlay">
+      @for (tick of years(); track tick.year) {
+        <span class="journey__gridline" [style.left.%]="tick.left"></span>
+      }
+      <span class="journey__today" [style.left.%]="today()">
+        <span>{{ text({ fr: 'Aujourd’hui', en: 'Today' }) }}</span>
+      </span>
+    </div>
+  </div>
+
+  <ol class="journey__entries">
+    <li class="journey-card journey-card--education" appReveal>
+      <p class="journey-card__period">
+        {{ text({ fr: 'Formation', en: 'Education' }) }} · {{ text(education().period) }}
+      </p>
+      <h3>{{ text(education().degree) }}</h3>
+      <p class="journey-card__org">
+        {{ text(education().school) }} ·
+        {{ text({ fr: 'Rabat, Maroc', en: 'Rabat, Morocco' }) }}
+      </p>
+    </li>
+    @for (segment of segments(); track segment.entry.id; let index = $index) {
+      <li
+        class="journey-card"
+        [class.is-active]="activeId() === segment.entry.id"
+        [style.--reveal-order]="index + 1"
+        (mouseenter)="activeId.set(segment.entry.id)"
+        (mouseleave)="activeId.set(null)"
+        appReveal
+      >
+        <span class="journey-card__badge" aria-hidden="true">{{ segment.number }}</span>
+        <p class="journey-card__period">
+          {{ text(segment.entry.period) }}
+          @if (segment.ongoing) {
+            <span class="journey-card__live">{{ text({ fr: 'en cours', en: 'ongoing' }) }}</span>
+          }
+        </p>
+        <h3>{{ text(segment.entry.role) }}</h3>
+        <p class="journey-card__org">
+          {{ text(segment.entry.organization) }} · {{ text(segment.entry.location) }}
+        </p>
+        <p class="journey-card__project">{{ text(segment.entry.project) }}</p>
+      </li>
+    }
+  </ol>
+</div>

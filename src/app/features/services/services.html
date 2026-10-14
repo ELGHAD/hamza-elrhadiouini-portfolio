@@ -1,0 +1,161 @@
+@let fr = localeService.locale() === 'fr';
+@let locale = localeService.locale();
+<section class="services-page" aria-labelledby="services-title">
+  <header class="services-hero" appReveal>
+    <p class="eyebrow">{{ fr ? 'Ce que je construis' : 'What I build' }}</p>
+    <h1 id="services-title">
+      {{ fr ? 'Un profil caméléon,' : 'One engineer,' }}
+      <span>{{ fr ? 'du backend à l’IA.' : 'from backend to AI.' }}</span>
+    </h1>
+    <p class="services-hero__lede">
+      {{
+        fr
+          ? 'Backend Java, applications web et mobiles, IA, cloud : je m’adapte à l’écosystème de votre projet et j’apprends vite ce qui me manque. Chaque service ci-dessous s’appuie sur des projets réels que vous pouvez ouvrir.'
+          : 'Java backends, web and mobile apps, AI, cloud: I adapt to your project’s ecosystem and quickly learn what I am missing. Every service below rests on real projects you can open.'
+      }}
+    </p>
+    <dl class="services-hero__stats">
+      @for (stat of stats; track $index) {
+        <div>
+          <dt>{{ stat.label[locale] }}</dt>
+          <dd>{{ stat.value }}</dd>
+        </div>
+      }
+    </dl>
+  </header>
+
+  <section class="ecosystems" aria-labelledby="ecosystems-title" appReveal>
+    <div class="section-heading">
+      <p class="eyebrow">{{ fr ? 'Polyvalence' : 'Range' }}</p>
+      <h2 id="ecosystems-title">{{ fr ? 'Les écosystèmes dans lesquels j’ai livré' : 'Ecosystems I have shipped in' }}</h2>
+    </div>
+    <ul class="ecosystem-list">
+      @for (ecosystem of ecosystems; track ecosystem.id) {
+        <li class="ecosystem">
+          <strong>{{ ecosystem.name }}</strong>
+          <span class="ecosystem__frameworks">{{ ecosystem.frameworks }}</span>
+          <span class="ecosystem__count">
+            {{ ecosystem.projectCount }} {{ fr ? (ecosystem.projectCount > 1 ? 'projets' : 'projet') : ecosystem.projectCount > 1 ? 'projects' : 'project' }}
+          </span>
+        </li>
+      }
+    </ul>
+  </section>
+
+  <section class="services-section" aria-labelledby="offers-title">
+    <div class="section-heading" appReveal>
+      <p class="eyebrow">{{ fr ? 'Services' : 'Services' }}</p>
+      <h2 id="offers-title">{{ fr ? 'Ce que je peux construire pour vous' : 'What I can build for you' }}</h2>
+    </div>
+    <div class="services-grid">
+      @for (service of services; track service.id; let index = $index) {
+        <article class="service-card" [id]="service.id" [style.--reveal-order]="index % 2" appReveal>
+          <header class="service-card__header">
+            <span class="service-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false">
+                @for (path of iconPaths(service.icon); track $index) {
+                  <path [attr.d]="path" />
+                }
+              </svg>
+            </span>
+            <span class="service-card__number" aria-hidden="true">{{ index + 1 < 10 ? '0' : '' }}{{ index + 1 }}</span>
+          </header>
+          <h3>{{ service.title[locale] }}</h3>
+          <p class="service-card__summary">{{ service.summary[locale] }}</p>
+
+          <ul class="service-card__deliverables">
+            @for (deliverable of service.deliverables; track $index) {
+              <li>{{ deliverable[locale] }}</li>
+            }
+          </ul>
+
+          <ul class="chip-list" [attr.aria-label]="fr ? 'Technologies' : 'Technologies'">
+            @for (technology of service.stack; track technology) {
+              <li>{{ technology }}</li>
+            }
+          </ul>
+
+          <div class="service-card__proofs">
+            <p>{{ fr ? 'Prouvé dans' : 'Proven in' }}</p>
+            <ul>
+              @for (proof of service.proofs; track $index) {
+                <li>
+                  <a [routerLink]="localeService.path(proof.path)" [fragment]="proof.fragment">
+                    {{ proof.label[locale] }} <span aria-hidden="true">→</span>
+                  </a>
+                </li>
+              }
+            </ul>
+          </div>
+        </article>
+      }
+    </div>
+  </section>
+
+  <section class="growth" aria-labelledby="growth-title">
+    <div class="section-heading" appReveal>
+      <p class="eyebrow">{{ fr ? 'Apprendre en continu' : 'Always learning' }}</p>
+      <h2 id="growth-title">{{ fr ? 'Un nouvel écosystème à chaque étape' : 'A new ecosystem at every step' }}</h2>
+      <p>
+        {{
+          fr
+            ? 'Je ne me limite pas à une seule stack : chaque stage, chaque mission m’a fait maîtriser un nouvel outil, en plus de certifications suivies en parallèle.'
+            : 'I do not stick to one stack: each internship and engagement made me master a new tool, alongside certifications taken in parallel.'
+        }}
+      </p>
+    </div>
+    <ol class="milestones" appReveal>
+      @for (milestone of milestones; track $index) {
+        <li class="milestone">
+          <a [routerLink]="localeService.path(milestone.path)">
+            <span class="milestone__year">{{ milestone.year[locale] }}</span>
+            <strong>{{ milestone.title[locale] }}</strong>
+            <span class="milestone__detail">{{ milestone.detail[locale] }}</span>
+          </a>
+        </li>
+      }
+    </ol>
+    <a class="text-link growth__link" [routerLink]="localeService.path('certifications')">
+      {{ fr ? 'Voir mes certifications' : 'See my certifications' }} <span aria-hidden="true">→</span>
+    </a>
+  </section>
+
+  <section class="process" aria-labelledby="process-title">
+    <div class="section-heading" appReveal>
+      <p class="eyebrow">{{ fr ? 'Méthode' : 'Method' }}</p>
+      <h2 id="process-title">{{ fr ? 'Comment je travaille' : 'How I work' }}</h2>
+    </div>
+    <ol class="process-steps" appReveal>
+      @for (step of steps; track $index) {
+        <li>
+          <span class="process-steps__index" aria-hidden="true">{{ $index + 1 }}</span>
+          <h3>{{ step.title[locale] }}</h3>
+          <p>{{ step.text[locale] }}</p>
+        </li>
+      }
+    </ol>
+  </section>
+
+  <aside class="services-cta" aria-labelledby="services-cta-title" appReveal>
+    <div>
+      <h2 id="services-cta-title">
+        {{ fr ? 'Un projet, un poste, une stack à apprendre ?' : 'A project, a role, a stack to learn?' }}
+      </h2>
+      <p>
+        {{
+          fr
+            ? 'Ingénieur d’État, disponible immédiatement. Dites-moi ce dont votre équipe a besoin.'
+            : 'State-certified engineer, available immediately. Tell me what your team needs.'
+        }}
+      </p>
+    </div>
+    <div class="services-cta__actions">
+      <a class="button button--primary" [routerLink]="localeService.path('contact')">
+        {{ fr ? 'Me contacter' : 'Get in touch' }} <span aria-hidden="true">→</span>
+      </a>
+      <a class="button button--outline" [routerLink]="localeService.path('projects')">
+        {{ fr ? 'Voir les projets' : 'See the projects' }}
+      </a>
+    </div>
+  </aside>
+</section>

@@ -1,51 +1,190 @@
-<section class="certifications">
-  <h1 class="certifications__title">Certifications</h1>
+<section class="certifications-page" aria-labelledby="certifications-title">
+  <header class="certifications-page__intro" appReveal>
+    <p class="eyebrow">
+      {{ localeService.locale() === 'fr' ? 'Apprentissage continu' : 'Continued learning' }}
+    </p>
+    <h1 id="certifications-title">
+      {{ localeService.locale() === 'fr' ? 'Certifications' : 'Certifications' }}
+    </h1>
+    <p>
+      {{
+        localeService.locale() === 'fr'
+          ? 'Certifications professionnelles et certificats de cours, avec leurs liens de vérification lorsqu’ils sont disponibles.'
+          : 'Professional certifications and course certificates, with verification links where available.'
+      }}
+    </p>
+    <p class="certifications-count">
+      {{ count }}
+      {{ localeService.locale() === 'fr' ? 'certificats recensés' : 'certificates recorded' }}
+    </p>
+  </header>
 
-  <div class="certifications__badges">
-    @for (issuer of issuers; track issuer) {
-      <span class="certifications__badge">{{ issuer }}</span>
+  <label class="certifications-search" appReveal>
+    <span>{{
+      localeService.locale() === 'fr' ? 'Rechercher un certificat' : 'Search certificates'
+    }}</span>
+    <input
+      type="search"
+      [value]="query()"
+      (input)="query.set($any($event.target).value)"
+      [placeholder]="localeService.locale() === 'fr' ? 'Titre ou organisme' : 'Title or issuer'"
+    />
+    @if (query()) {
+      <button type="button" (click)="query.set('')">
+        {{ localeService.locale() === 'fr' ? 'Effacer' : 'Clear' }}
+      </button>
     }
-  </div>
+  </label>
 
-  <h2 class="certifications__section-title">Featured</h2>
-  <div class="certifications__grid">
-    @for (cert of featured; track cert.id) {
-      <div class="certifications__card">
-        <p class="certifications__card-name">{{ cert.name }}</p>
-        <p class="certifications__card-meta">{{ cert.issuer }} &middot; {{ cert.year }}</p>
+  @if (featured().length) {
+    <section class="certification-section" aria-labelledby="featured-certifications-title">
+      <div class="section-heading" appReveal>
+        <p class="eyebrow">{{ localeService.locale() === 'fr' ? 'Sélection' : 'Selected' }}</p>
+        <h2 id="featured-certifications-title">
+          {{ localeService.locale() === 'fr' ? 'Mises en avant' : 'Featured' }}
+        </h2>
       </div>
-    }
-  </div>
-
-  <div class="certifications__tracks">
-    <button type="button" class="certifications__track-toggle" (click)="toggleTrack('backend')">
-      {{ isExpanded('backend') ? '&minus;' : '+' }} Meta Back-End Developer — included coursework
-    </button>
-    @if (isExpanded('backend')) {
-      <ul class="certifications__sub-list">
-        @for (cert of backendTrack; track cert.id) {
-          <li>{{ cert.name }} <span class="certifications__sub-year">({{ cert.year }})</span></li>
+      <div class="certifications-grid">
+        @for (certification of featured(); track certification.id) {
+          <article class="certification-card" appReveal>
+            <span class="certification-card__kind">{{ kindLabel(certification) }}</span>
+            <h3>{{ certification.title }}</h3>
+            <p class="certification-card__issuer">{{ certification.issuer }}</p>
+            <div class="certification-card__links">
+              @if (certification.verifyUrl) {
+                <a [href]="certification.verifyUrl" target="_blank" rel="noopener noreferrer"
+                  >{{ localeService.locale() === 'fr' ? 'Vérifier' : 'Verify' }}
+                  <span aria-hidden="true">↗</span></a
+                >
+              }
+              @if (certification.courseUrl) {
+                <a [href]="certification.courseUrl" target="_blank" rel="noopener noreferrer"
+                  >{{ localeService.locale() === 'fr' ? 'Parcours' : 'Program' }}
+                  <span aria-hidden="true">↗</span></a
+                >
+              }
+            </div>
+          </article>
         }
-      </ul>
-    }
+      </div>
+    </section>
+  }
 
-   <button type="button" class="certifications__track-toggle" (click)="toggleTrack('backend')">
-  <span class="certifications__track-icon">{{ isExpanded('backend') ? '−' : '+' }}</span>
-  Meta Back-End Developer — included coursework
-</button>
-    @if (isExpanded('frontend')) {
-      <ul class="certifications__sub-list">
-        @for (cert of frontendTrack; track cert.id) {
-          <li>{{ cert.name }} <span class="certifications__sub-year">({{ cert.year }})</span></li>
-        }
-      </ul>
-    }
-  </div>
+  <section
+    class="certification-section certification-groups"
+    aria-labelledby="all-certifications-title"
+  >
+    <div class="section-heading" appReveal>
+      <p class="eyebrow">{{ localeService.locale() === 'fr' ? 'Catalogue' : 'Catalogue' }}</p>
+      <h2 id="all-certifications-title">
+        {{ localeService.locale() === 'fr' ? 'Par domaine' : 'By subject' }}
+      </h2>
+    </div>
 
-  <h2 class="certifications__section-title">Additional coursework</h2>
-  <ul class="certifications__additional-list">
-    @for (cert of additional; track cert.id) {
-      <li>{{ cert.name }} — <span class="certifications__additional-issuer">{{ cert.issuer }}</span> ({{ cert.year }})</li>
+    @for (group of groups; track group.id) {
+      @if (groupCertifications(group.id).length) {
+        <section class="certification-group">
+          <h3>
+            <button
+              type="button"
+              [attr.aria-expanded]="isGroupExpanded(group.id)"
+              [attr.aria-controls]="'group-' + group.id"
+              (click)="toggleGroup(group.id)"
+            >
+              <span>{{ group.title[localeService.locale()] }}</span>
+              <span class="certification-group__count">{{ groupCount(group.id) }}</span>
+              <span class="certification-group__icon" aria-hidden="true">{{
+                isGroupExpanded(group.id) ? '−' : '+'
+              }}</span>
+            </button>
+          </h3>
+          @if (isGroupExpanded(group.id)) {
+            <div class="certification-group__body" [id]="'group-' + group.id">
+              @for (certification of groupCertifications(group.id); track certification.id) {
+                @if (childrenFor(certification.id).length) {
+                  <article class="certification-parent">
+                    <div class="certification-parent__heading">
+                      <div>
+                        <span class="certification-card__kind">{{ kindLabel(certification) }}</span>
+                        <h4>{{ certification.title }}</h4>
+                        <p>{{ certification.issuer }}</p>
+                      </div>
+                      <div class="certification-card__links">
+                        @if (certification.verifyUrl) {
+                          <a
+                            [href]="certification.verifyUrl"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            >{{ localeService.locale() === 'fr' ? 'Vérifier' : 'Verify' }} ↗</a
+                          >
+                        }
+                        @if (certification.courseUrl) {
+                          <a
+                            [href]="certification.courseUrl"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            >{{ localeService.locale() === 'fr' ? 'Parcours' : 'Program' }} ↗</a
+                          >
+                        }
+                      </div>
+                    </div>
+                    <button
+                      class="certification-parent__toggle"
+                      type="button"
+                      [attr.aria-expanded]="isParentExpanded(certification.id)"
+                      [attr.aria-controls]="'children-' + certification.id"
+                      (click)="toggleParent(certification.id)"
+                    >
+                      {{
+                        isParentExpanded(certification.id)
+                          ? localeService.locale() === 'fr'
+                            ? 'Masquer les cours'
+                            : 'Hide courses'
+                          : localeService.locale() === 'fr'
+                            ? 'Afficher les cours'
+                            : 'Show courses'
+                      }}
+                      <span>{{ childrenFor(certification.id).length }}</span>
+                    </button>
+                    @if (isParentExpanded(certification.id)) {
+                      <ul class="certification-children" [id]="'children-' + certification.id">
+                        @for (child of childrenFor(certification.id); track child.id) {
+                          <li>
+                            <span>
+                              <strong>{{ child.title }}</strong>
+                              <small>{{ kindLabel(child) }} · {{ child.issuer }}</small>
+                            </span>
+                            @if (child.verifyUrl) {
+                              <a [href]="child.verifyUrl" target="_blank" rel="noopener noreferrer"
+                                >{{ localeService.locale() === 'fr' ? 'Vérifier' : 'Verify' }}
+                                <span aria-hidden="true">↗</span></a
+                              >
+                            }
+                          </li>
+                        }
+                      </ul>
+                    }
+                  </article>
+                } @else {
+                  <article class="certification-row">
+                    <div>
+                      <span class="certification-card__kind">{{ kindLabel(certification) }}</span>
+                      <h4>{{ certification.title }}</h4>
+                      <p>{{ certification.issuer }}</p>
+                    </div>
+                    @if (certification.verifyUrl) {
+                      <a [href]="certification.verifyUrl" target="_blank" rel="noopener noreferrer"
+                        >{{ localeService.locale() === 'fr' ? 'Vérifier' : 'Verify' }}
+                        <span aria-hidden="true">↗</span></a
+                      >
+                    }
+                  </article>
+                }
+              }
+            </div>
+          }
+        </section>
+      }
     }
-  </ul>
+  </section>
 </section>

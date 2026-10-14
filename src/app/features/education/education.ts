@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { EducationService } from '../../core/services/education.service';
+import { LocaleService } from '../../core/services/locale.service';
 import { TimelineItemComponent } from '../../shared/components/timeline-item/timeline-item';
 
 @Component({
@@ -7,10 +8,11 @@ import { TimelineItemComponent } from '../../shared/components/timeline-item/tim
   standalone: true,
   imports: [TimelineItemComponent],
   templateUrl: './education.html',
-  styleUrl: './education.scss'
+  styleUrl: './education.scss',
 })
 export class EducationComponent {
-  private educationService = inject(EducationService);
+  private readonly educationService = inject(EducationService);
+  readonly localeService = inject(LocaleService);
 
-  education = this.educationService.getAll();
+  readonly education = this.educationService.getAll();
 }

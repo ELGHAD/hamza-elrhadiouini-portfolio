@@ -1,11 +1,30 @@
 <footer class="site-footer">
   <div class="site-footer__inner">
-    <p class="site-footer__name">Hamza Elrhadiouini — ELGH4D</p>
-    <div class="site-footer__links">
-      <a href="https://github.com/ELGHAD" target="_blank" rel="noopener">GitHub</a>
-      <a href="https://ma.linkedin.com/in/elrhadiouini-hamza-64ba04202" target="_blank" rel="noopener">LinkedIn</a>
-      <a href="mailto:hamelrhadiouini@gmail.com">Email</a>
-    </div>
-    <p class="site-footer__copy">&copy; {{ currentYear }} Hamza Elrhadiouini. All rights reserved.</p>
+    <p class="site-footer__name">Hamza EL RHADIOUINI</p>
+    <nav class="site-footer__links" [attr.aria-label]="copy.navigation[localeService.locale()]">
+      <a [routerLink]="localeService.path('projects')">{{
+        copy.projects[localeService.locale()]
+      }}</a>
+      <a [routerLink]="localeService.path('services')">{{
+        copy.services[localeService.locale()]
+      }}</a>
+      <a [routerLink]="localeService.path('experience')">{{
+        copy.experience[localeService.locale()]
+      }}</a>
+      <a [routerLink]="localeService.path('contact')">{{ copy.contact[localeService.locale()] }}</a>
+      @if (profile.linkedin.status === 'verified') {
+        <a
+          [href]="profile.linkedin[localeService.locale()]"
+          target="_blank"
+          rel="noopener noreferrer"
+          >LinkedIn</a
+        >
+      }
+      <a href="https://github.com/ELGHAD" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href="mailto:hamelrhadiouini@gmail.com">{{ copy.email[localeService.locale()] }}</a>
+    </nav>
+    <p class="site-footer__copy">
+      &copy; {{ buildYear }} Hamza EL RHADIOUINI
+    </p>
   </div>
 </footer>

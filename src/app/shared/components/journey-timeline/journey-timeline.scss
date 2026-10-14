@@ -1,0 +1,343 @@
+:host {
+  display: block;
+}
+
+.journey {
+  display: grid;
+  gap: 1.5rem;
+}
+
+// ---- Chart: label column + one shared time axis for every track ----
+.journey__chart {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  grid-template-rows: 1.6rem 3.25rem auto;
+  align-items: center;
+  column-gap: 1rem;
+  padding: 1.25rem 1.5rem 1.4rem;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background:
+    radial-gradient(90% 120% at 100% 0%, var(--accent-soft), transparent 60%),
+    var(--surface);
+}
+
+.journey__label {
+  grid-column: 1;
+  color: var(--text-muted);
+  font-family: 'JetBrains Mono Variable', monospace;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.journey__axis,
+.journey__track,
+.journey__overlay {
+  position: relative;
+  grid-column: 2;
+  height: 100%;
+}
+
+.journey__year {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  color: var(--text-muted);
+  font-family: 'JetBrains Mono Variable', monospace;
+  font-size: 0.72rem;
+
+  &:first-child {
+    transform: none;
+  }
+}
+
+// Explicit rows everywhere: the overlay spans the whole column, so auto-placement
+// would otherwise push the tracks into new rows below it.
+.journey__label--axis,
+.journey__axis {
+  grid-row: 1;
+}
+
+.journey__label--education,
+.journey__track--education {
+  grid-row: 2;
+}
+
+.journey__label--work,
+.journey__track--work {
+  grid-row: 3;
+}
+
+.journey__overlay {
+  z-index: 0;
+  grid-row: 1 / -1;
+  pointer-events: none;
+}
+
+.journey__gridline {
+  position: absolute;
+  top: 1.5rem;
+  bottom: 0;
+  border-left: 1px dashed var(--border);
+}
+
+.journey__today {
+  position: absolute;
+  top: 1.5rem;
+  bottom: -0.4rem;
+  border-left: 1.5px solid var(--accent);
+
+  span {
+    position: absolute;
+    right: 0.35rem;
+    bottom: -0.15rem;
+    color: var(--accent-text);
+    font-family: 'JetBrains Mono Variable', monospace;
+    font-size: 0.65rem;
+    white-space: nowrap;
+  }
+}
+
+.journey__track {
+  z-index: 1;
+}
+
+.journey__track--work {
+  height: calc(var(--lanes, 1) * 2.4rem);
+}
+
+// ---- Bars ----
+.journey__bar {
+  position: absolute;
+  transform-origin: left center;
+  transition:
+    transform 700ms cubic-bezier(0.2, 0.7, 0.2, 1),
+    box-shadow 200ms ease,
+    background-color 200ms ease;
+}
+
+.journey__bar--education {
+  top: 50%;
+  height: 2.2rem;
+  display: flex;
+  align-items: center;
+  padding-inline: 1rem;
+  overflow: hidden;
+  margin-top: -1.1rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  border-radius: 999px;
+  // Faded ends: only the years are known, not the exact months.
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--accent) 22%, transparent) 9%,
+    color-mix(in srgb, var(--accent) 22%, transparent) 91%,
+    transparent
+  );
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+
+  span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.journey__bar--work {
+  top: calc(var(--lane) * 2.4rem + 0.5rem);
+  height: 1.4rem;
+  min-width: 1.4rem;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+  cursor: default;
+  transition-delay: calc(var(--order, 0) * 90ms + 200ms), 0s, 0s;
+
+  &.is-ongoing {
+    background: linear-gradient(90deg, var(--accent) 70%, color-mix(in srgb, var(--accent) 25%, transparent));
+  }
+
+  &.is-active {
+    box-shadow:
+      0 0 0 3px var(--accent-soft),
+      0 0 18px color-mix(in srgb, var(--accent) 60%, transparent);
+  }
+}
+
+.journey__badge {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  display: grid;
+  width: 1.4rem;
+  height: 1.4rem;
+  place-items: center;
+  margin-top: -0.7rem;
+  border-radius: 50%;
+  background: var(--on-accent);
+  box-shadow: inset 0 0 0 1.5px var(--accent);
+  color: var(--accent-text);
+  font-family: 'JetBrains Mono Variable', monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+// Bars grow from the left once the chart scrolls into view (RevealDirective).
+:host-context(.reveal-ready) .journey__chart:not(.is-visible) .journey__bar {
+  transform: scaleX(0);
+}
+
+// ---- Cards ----
+.journey__entries {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.journey-card {
+  position: relative;
+  min-width: 0;
+  padding: 1.1rem 1.2rem 1.1rem 3.4rem;
+  border: 1px solid var(--border);
+  border-radius: 0.8rem;
+  background: var(--surface);
+  transition: border-color 200ms ease, background-color 200ms ease;
+
+  &.is-active {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 6%, var(--surface));
+  }
+
+  &--education {
+    grid-column: 1 / -1;
+    padding-left: 1.2rem;
+    border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+    background: linear-gradient(90deg, var(--accent-soft), var(--surface) 70%);
+  }
+
+  &__badge {
+    position: absolute;
+    top: 1.05rem;
+    left: 1.1rem;
+    display: grid;
+    width: 1.6rem;
+    height: 1.6rem;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--on-accent);
+    font-family: 'JetBrains Mono Variable', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  &__period {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    color: var(--accent-text);
+    font-family: 'JetBrains Mono Variable', monospace;
+    font-size: 0.75rem;
+  }
+
+  &__live {
+    padding: 0.05rem 0.45rem;
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    font-size: 0.68rem;
+  }
+
+  h3 {
+    margin: 0.4rem 0 0.25rem;
+    color: var(--text);
+    font-size: 1rem;
+    line-height: 1.35;
+  }
+
+  &__org {
+    margin: 0;
+    color: var(--text);
+    font-size: 0.88rem;
+  }
+
+  &__project {
+    margin: 0.3rem 0 0;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .journey__chart {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto;
+    padding: 1rem 0.9rem 1.2rem;
+  }
+
+  // Labels sit above their track on small screens.
+  .journey__label {
+    margin-top: 0.6rem;
+
+    &--axis {
+      display: none;
+    }
+  }
+
+  .journey__axis,
+  .journey__track,
+  .journey__overlay {
+    grid-column: 1;
+  }
+
+  .journey__axis {
+    height: 1.4rem;
+  }
+
+  .journey__label--education {
+    grid-row: 2;
+  }
+  .journey__track--education {
+    grid-row: 3;
+  }
+  .journey__label--work {
+    grid-row: 4;
+  }
+  .journey__track--work {
+    grid-row: 5;
+  }
+
+  .journey__track--education {
+    height: 2.6rem;
+  }
+
+  .journey__overlay {
+    grid-row: 1 / 6;
+  }
+
+  .journey__year:not(:first-child, :last-child) {
+    font-size: 0.65rem;
+  }
+
+  .journey__bar--education {
+    padding-inline: 0.75rem;
+    font-size: 0.75rem;
+  }
+
+  .journey__entries {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .journey__bar,
+  .journey-card {
+    transition: none;
+  }
+}

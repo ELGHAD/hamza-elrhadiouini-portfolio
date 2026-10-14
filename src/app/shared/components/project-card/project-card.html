@@ -1,27 +1,92 @@
-<article class="project-card" [class.project-card--compact]="project.compact">
+@let p = project();
+@let fr = localeService.locale() === 'fr';
+<article
+  class="project-card"
+  [class.project-card--spotlight]="spotlight()"
+  [class.project-card--standard]="p.tier === 'standard' || p.tier === 'exercise'"
+>
   <div class="project-card__body">
-    <h3 class="project-card__title">{{ project.title }}</h3>
-    <p class="project-card__tagline">{{ project.tagline }}</p>
-
-    @if (!project.compact) {
-      <div class="project-card__stack">
-        @for (tech of project.techStack.slice(0, 5); track tech) {
-          <app-skill-tag [label]="tech"></app-skill-tag>
+    <div class="project-card__topline">
+      <span class="project-card__eyebrow">
+        {{ p.group === 'professional' ? (fr ? 'Mission professionnelle' : 'Professional work') : groupLabel() }}
+      </span>
+      <ul class="project-card__badges" [attr.aria-label]="fr ? 'Statut' : 'Status'">
+        @if (p.state; as state) {
+          <li class="badge badge--state">{{ state[localeService.locale()] }}</li>
         }
-      </div>
+        @if (p.team === 'pair') {
+          <li class="badge">{{ fr ? 'En binôme' : 'In a pair' }}</li>
+        }
+        @if (p.confidential) {
+          <li class="badge badge--muted">{{ fr ? 'Confidentiel' : 'Confidential' }}</li>
+        }
+      </ul>
+    </div>
+
+    <h3 class="project-card__title">
+      <a class="project-card__title-link" [routerLink]="localeService.path('projects/' + p.id)">
+        {{ p.title[localeService.locale()] }}
+      </a>
+    </h3>
+    @if (p.setting || p.period) {
+      <p class="project-card__meta">
+        @if (p.setting; as setting) {
+          <span>{{ setting[localeService.locale()] }}</span>
+        }
+        @if (p.period; as period) {
+          <span>{{ period[localeService.locale()] }}</span>
+        }
+      </p>
+    }
+    <p class="project-card__summary">{{ p.summary[localeService.locale()] }}</p>
+
+    @if (spotlight() && p.context; as context) {
+      <p class="project-card__context">{{ context[localeService.locale()] }}</p>
     }
 
-    <div class="project-card__actions">
-      @if (!project.compact) {
-        <a [routerLink]="['/projects', project.id]" class="project-card__link">
-          View details &rarr;
-        </a>
+    @if (metrics().length) {
+      <dl class="project-card__metrics">
+        @for (metric of metrics(); track $index) {
+          <div>
+            <dt>{{ metric.label[localeService.locale()] }}</dt>
+            <dd>{{ metric.value[localeService.locale()] }}</dd>
+          </div>
+        }
+      </dl>
+    }
+
+    <ul class="project-card__stack chip-list" [attr.aria-label]="fr ? 'Technologies' : 'Technologies'">
+      @for (technology of visibleStack(); track technology) {
+        <li>{{ technology }}</li>
       }
-      @if (project.githubUrl) {
-        <a [href]="project.githubUrl" target="_blank" rel="noopener" class="project-card__link">
-          GitHub &#8599;
-        </a>
+      @if (hiddenStackCount() > 0) {
+        <li class="chip-list__more">+{{ hiddenStackCount() }}</li>
       }
-    </div>
+    </ul>
+  </div>
+
+  <div class="project-card__actions">
+    <a class="project-card__cta" [routerLink]="localeService.path('projects/' + p.id)">
+      {{
+        p.tier === 'standard' || p.tier === 'exercise'
+          ? fr ? 'Voir le détail' : 'View details'
+          : fr ? 'Lire l’étude de cas' : 'Read the case study'
+      }}
+      <span aria-hidden="true">→</span>
+      <span class="sr-only">: {{ p.title[localeService.locale()] }}</span>
+    </a>
+    @if (p.links.live) {
+      <a class="text-link" [href]="p.links.live" target="_blank" rel="noopener noreferrer">
+        {{ fr ? 'Site en ligne' : 'Live site' }} <span aria-hidden="true">↗</span>
+      </a>
+    }
+    @if (repository(); as repo) {
+      <a class="text-link" [href]="repo" target="_blank" rel="noopener noreferrer">
+        GitHub <span aria-hidden="true">↗</span>
+      </a>
+    }
+    @if (p.confidential) {
+      <span class="project-card__note">{{ fr ? 'Code confidentiel' : 'Confidential code' }}</span>
+    }
   </div>
 </article>

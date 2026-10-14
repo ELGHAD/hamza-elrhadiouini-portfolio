@@ -2,7 +2,11 @@
   class="theme-toggle"
   type="button"
   (click)="toggle()"
-  [attr.aria-label]="themeService.theme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
+  [attr.aria-label]="
+    themeService.theme() === 'dark'
+      ? copy.themeLight[localeService.locale()]
+      : copy.themeDark[localeService.locale()]
+  "
 >
   @if (themeService.theme() === 'dark') {
     <span aria-hidden="true">&#9789;</span>

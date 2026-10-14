@@ -1,0 +1,44 @@
+@if (testimonials.length) {
+  <section class="testimonials-section" aria-labelledby="testimonials-title">
+    <div appReveal>
+      <p class="eyebrow">{{ localeService.locale() === 'fr' ? 'Témoignages' : 'Testimonials' }}</p>
+      <h2 id="testimonials-title">
+        {{ localeService.locale() === 'fr' ? 'Ils ont travaillé avec moi' : 'People I’ve worked with' }}
+      </h2>
+    </div>
+    <div class="testimonials-grid">
+      @for (testimonial of testimonials; track testimonial.id; let index = $index) {
+        <figure class="testimonial" appReveal [style.--reveal-order]="index">
+          @if (showsTranslation(testimonial)) {
+            <blockquote [attr.lang]="localeService.locale()">
+              <p>{{ testimonial.translation }}</p>
+            </blockquote>
+            <details class="testimonial__original">
+              <summary>
+                {{
+                  localeService.locale() === 'fr'
+                    ? 'Traduction · voir le texte original'
+                    : 'Translated · show the original text'
+                }}
+              </summary>
+              <p [attr.lang]="testimonial.quote.lang">{{ testimonial.quote.text }}</p>
+            </details>
+          } @else {
+            <blockquote [attr.lang]="testimonial.quote.lang">
+              <p>{{ testimonial.quote.text }}</p>
+            </blockquote>
+          }
+          <figcaption>
+            <span class="testimonial__author">{{ testimonial.author }}</span>
+            <span
+              >{{ testimonial.role[localeService.locale()] }} · {{ testimonial.organization }}</span
+            >
+            <span class="testimonial__context">{{
+              testimonial.context[localeService.locale()]
+            }}</span>
+          </figcaption>
+        </figure>
+      }
+    </div>
+  </section>
+}

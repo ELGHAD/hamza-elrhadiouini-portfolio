@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import emailjs from '@emailjs/browser';
+import { environment } from '../../../environments/environment';
 
 export interface ContactFormData {
   name: string;
@@ -9,20 +9,32 @@ export interface ContactFormData {
 
 @Injectable({ providedIn: 'root' })
 export class EmailService {
-  private readonly serviceId = 'service_r7onrxq';
-  private readonly templateId = 'template_g5igah6';
-  private readonly publicKey = 'pOu0FlhvGBN4cJMBa';
+  isConfigured(): boolean {
+    const { serviceId, templateId, publicKey } = environment.emailjs;
+    return Boolean(serviceId && templateId && publicKey);
+  }
 
   async sendMessage(data: ContactFormData): Promise<void> {
+    const { serviceId, templateId, publicKey } = environment.emailjs;
+    if (!serviceId || !templateId || !publicKey) {
+      throw new Error('EmailJS is not configured for this deployment.');
+    }
+
+    // Loaded on submit only, so the SDK never weighs on the initial page load.
+    const { default: emailjs } = await import('@emailjs/browser');
     await emailjs.send(
-      this.serviceId,
-      this.templateId,
+      serviceId,
+      templateId,
       {
         name: data.name,
         email: data.email,
-        message: data.message
+        message: data.message,
       },
-      this.publicKey
+      {
+        publicKey,
+        blockHeadless: true,
+        limitRate: { id: 'portfolio-contact', throttle: 60_000 },
+      },
     );
   }
 }

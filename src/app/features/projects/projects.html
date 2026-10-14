@@ -1,45 +1,237 @@
-<section class="projects">
-  <h1 class="projects__title">Projects</h1>
-
-  <div class="projects__tabs" role="tablist">
-    <button
-      type="button"
-      role="tab"
-      class="projects__tab"
-      [class.projects__tab--active]="activeTab() === 'professional'"
-      (click)="setTab('professional')"
-    >
-      Professional
-    </button>
-    <button
-      type="button"
-      role="tab"
-      class="projects__tab"
-      [class.projects__tab--active]="activeTab() === 'personal'"
-      (click)="setTab('personal')"
-    >
-      Personal
-    </button>
-  </div>
-
-  @if (activeTab() === 'professional') {
-    <p class="projects__note">
-      Real internships backed by an official convention, at ALTEN and RATITEC.
+@let fr = localeService.locale() === 'fr';
+@let locale = localeService.locale();
+<section class="projects-page" id="projects-content">
+  <header class="projects-hero" appReveal>
+    <p class="eyebrow">{{ fr ? 'Projets' : 'Projects' }}</p>
+    <h1>
+      {{ fr ? 'Des projets concrets,' : 'Real projects,' }}
+      <span>{{ fr ? 'racontés avec leurs preuves.' : 'told with their evidence.' }}</span>
+    </h1>
+    <p class="projects-hero__lede">
+      {{
+        fr
+          ? 'Missions en entreprise, plateforme en production, IA, backend Java et applications web : pour chaque projet, le problème, ce que j’ai fait et ce que cela a donné. Les chiffres affichés sont mesurés, jamais arrondis à mon avantage.'
+          : 'Company engagements, a live platform, AI, Java backends and web apps: for each project, the problem, what I did and what came out of it. Every figure shown is measured, never rounded in my favour.'
+      }}
     </p>
-  }
+    <dl class="projects-hero__stats">
+      @for (stat of stats; track $index) {
+        <div>
+          <dt>{{ stat.label[locale] }}</dt>
+          <dd>{{ stat.value }}</dd>
+        </div>
+      }
+    </dl>
+    <nav class="projects-hero__jump" [attr.aria-label]="fr ? 'Aller à une section' : 'Jump to a section'">
+      <a routerLink="." fragment="professional">{{ professionalGroup?.title?.[locale] }}</a>
+      <a routerLink="." fragment="featured">{{ fr ? 'Projets phares' : 'Featured projects' }}</a>
+      @for (section of domainSections; track section.info.id) {
+        <a routerLink="." [fragment]="section.info.id">{{ section.info.title[locale] }}</a>
+      }
+      <a routerLink="." fragment="foundations">{{ foundationsGroup?.title?.[locale] }}</a>
+    </nav>
+  </header>
 
-  <div class="projects__grid">
-    @for (project of mainProjects(); track project.id) {
-      <app-project-card [project]="project"></app-project-card>
-    }
-  </div>
-
-  @if (compactProjects().length > 0) {
-    <h2 class="projects__compact-title">Additional projects</h2>
-    <div class="projects__compact-grid">
-      @for (project of compactProjects(); track project.id) {
-        <app-project-card [project]="project"></app-project-card>
+  <section class="project-filters" aria-labelledby="filters-title" appReveal>
+    <h2 id="filters-title" class="project-filters__title">
+      {{ fr ? 'Chercher un projet précis' : 'Looking for something specific?' }}
+    </h2>
+    <div
+      class="project-filters__categories"
+      role="group"
+      [attr.aria-label]="fr ? 'Filtrer par domaine' : 'Filter by domain'"
+    >
+      @for (option of categoryOptions; track option.id) {
+        <button
+          class="filter-button"
+          type="button"
+          [class.filter-button--active]="activeCategory() === option.id"
+          [attr.aria-pressed]="activeCategory() === option.id"
+          (click)="setCategory(option.id)"
+        >
+          {{ option.label[locale] }}
+        </button>
       }
     </div>
+
+    <div class="project-filters__fields">
+      <label class="filter-field">
+        <span>{{ fr ? 'Technologie' : 'Technology' }}</span>
+        <select [value]="activeTechnology()" (change)="activeTechnology.set($any($event.target).value)">
+          <option value="">{{ fr ? 'Toutes les technologies' : 'All technologies' }}</option>
+          @for (technology of technologyOptions; track technology) {
+            <option [value]="technology">{{ technology }}</option>
+          }
+        </select>
+      </label>
+      <label class="filter-field filter-field--search">
+        <span>{{ fr ? 'Rechercher' : 'Search' }}</span>
+        <input
+          type="search"
+          [value]="searchTerm()"
+          (input)="searchTerm.set($any($event.target).value)"
+          [placeholder]="fr ? 'Nom, contexte ou technologie' : 'Name, context, or technology'"
+        />
+      </label>
+      @if (isFiltering()) {
+        <button class="reset-button" type="button" (click)="resetFilters()">
+          {{ fr ? 'Effacer les filtres' : 'Clear filters' }}
+        </button>
+      }
+    </div>
+    <p class="project-filters__count" aria-live="polite">
+      @if (isFiltering()) {
+        {{ filteredProjects().length }} / {{ allProjects.length }}
+        {{ fr ? 'projets correspondent' : 'projects match' }}
+      } @else {
+        {{ allProjects.length }} {{ fr ? 'projets, classés ci-dessous' : 'projects, organised below' }}
+      }
+    </p>
+  </section>
+
+  @if (isFiltering()) {
+    <section class="project-section" aria-labelledby="results-title">
+      <h2 id="results-title" class="sr-only">{{ fr ? 'Résultats' : 'Results' }}</h2>
+      @if (filteredProjects().length) {
+        <div class="projects-grid projects-grid--three">
+          @for (project of filteredProjects(); track project.id) {
+            <app-project-card [project]="project"></app-project-card>
+          }
+        </div>
+      } @else {
+        <p class="empty-state" role="status">
+          {{ fr ? 'Aucun projet ne correspond à ces filtres.' : 'No projects match these filters.' }}
+          <button type="button" (click)="resetFilters()">
+            {{ fr ? 'Réinitialiser' : 'Reset filters' }}
+          </button>
+        </p>
+      }
+    </section>
+  } @else {
+    @if (professionalGroup; as group) {
+      <section class="project-section" id="professional" aria-labelledby="professional-title">
+        <div class="section-heading" appReveal>
+          <p class="eyebrow"><span class="section-heading__index">01</span>{{ group.eyebrow[locale] }}</p>
+          <h2 id="professional-title">{{ group.title[locale] }}</h2>
+          <p>{{ group.intro[locale] }}</p>
+        </div>
+        @for (project of spotlight; track project.id) {
+          <app-project-card class="project-section__spotlight" [project]="project" appReveal></app-project-card>
+        }
+        <div class="projects-grid projects-grid--three">
+          @for (project of professionalOthers; track project.id; let index = $index) {
+            <app-project-card [project]="project" [style.--reveal-order]="index" appReveal></app-project-card>
+          }
+        </div>
+      </section>
+    }
+
+    <section class="project-section" id="featured" aria-labelledby="featured-title">
+      <div class="section-heading" appReveal>
+        <p class="eyebrow">
+          <span class="section-heading__index">02</span>{{ fr ? 'Projets personnels' : 'Personal projects' }}
+        </p>
+        <h2 id="featured-title">{{ fr ? 'Projets phares' : 'Featured projects' }}</h2>
+        <p>
+          {{
+            fr
+              ? 'Ceux qui montrent le mieux ma façon de travailler : un vrai problème, une méthode, et des résultats que l’on peut vérifier dans le code.'
+              : 'The ones that best show how I work: a real problem, a method, and results you can check in the code.'
+          }}
+        </p>
+      </div>
+      @for (project of featuredSpotlight; track project.id) {
+        <app-project-card class="project-section__spotlight" [project]="project" appReveal></app-project-card>
+      }
+      <div class="projects-grid">
+        @for (project of featuredOthers; track project.id; let index = $index) {
+          <app-project-card [project]="project" [style.--reveal-order]="index" appReveal></app-project-card>
+        }
+      </div>
+    </section>
+
+    @for (section of domainSections; track section.info.id; let sectionIndex = $index) {
+      <section class="project-section" [id]="section.info.id" [attr.aria-labelledby]="section.info.id + '-title'">
+        <div class="section-heading" appReveal>
+          <p class="eyebrow">
+            <span class="section-heading__index">0{{ sectionIndex + 3 }}</span>{{ section.info.eyebrow[locale] }}
+          </p>
+          <h2 [id]="section.info.id + '-title'">{{ section.info.title[locale] }}</h2>
+          <p>{{ section.info.intro[locale] }}</p>
+        </div>
+        <div class="projects-grid projects-grid--three">
+          @for (project of section.projects; track project.id; let index = $index) {
+            <app-project-card [project]="project" [style.--reveal-order]="index" appReveal></app-project-card>
+          }
+        </div>
+      </section>
+    }
+
+    @if (foundationsGroup; as group) {
+      <section class="project-section" id="foundations" aria-labelledby="foundations-title">
+        <div class="section-heading" appReveal>
+          <p class="eyebrow">
+            <span class="section-heading__index">0{{ domainSections.length + 3 }}</span>{{ group.eyebrow[locale] }}
+          </p>
+          <h2 id="foundations-title">{{ group.title[locale] }}</h2>
+          <p>{{ group.intro[locale] }}</p>
+        </div>
+        <ul class="exercise-list" appReveal>
+          @for (project of exercises; track project.id) {
+            <li class="exercise-row">
+              <div class="exercise-row__main">
+                <h3>
+                  <a [routerLink]="localeService.path('projects/' + project.id)">{{ project.title[locale] }}</a>
+                </h3>
+                <p>{{ project.summary[locale] }}</p>
+              </div>
+              @if (project.proves; as proves) {
+                <p class="exercise-row__proves">
+                  <span>{{ fr ? 'Concept travaillé' : 'Concept practised' }}</span>
+                  {{ proves[locale] }}
+                </p>
+              }
+              <div class="exercise-row__side">
+                <ul class="chip-list" [attr.aria-label]="fr ? 'Technologies' : 'Technologies'">
+                  @for (technology of project.techStack; track technology) {
+                    <li>{{ technology }}</li>
+                  }
+                </ul>
+                @if (repository(project); as repo) {
+                  <a class="text-link" [href]="repo" target="_blank" rel="noopener noreferrer">
+                    GitHub <span aria-hidden="true">↗</span>
+                    <span class="sr-only">: {{ project.title[locale] }}</span>
+                  </a>
+                }
+              </div>
+            </li>
+          }
+        </ul>
+      </section>
+    }
   }
+
+  <aside class="projects-cta" aria-labelledby="projects-cta-title" appReveal>
+    <div>
+      <p class="eyebrow">{{ fr ? 'La suite' : 'What’s next' }}</p>
+      <h2 id="projects-cta-title">
+        {{ fr ? 'Un poste ou un projet qui ressemble à l’un de ceux-ci ?' : 'Hiring for something like these?' }}
+      </h2>
+      <p>
+        {{
+          fr
+            ? 'Je suis ingénieur d’État, disponible immédiatement. Backend Java/Spring Boot, applications full-stack ou copilote IA : parlons de ce dont votre équipe a besoin.'
+            : 'I am a state-certified engineer, available immediately. Java/Spring Boot backends, full-stack apps or AI copilots: let’s talk about what your team needs.'
+        }}
+      </p>
+    </div>
+    <div class="projects-cta__actions">
+      <a class="button button--primary" [routerLink]="localeService.path('contact')">
+        {{ fr ? 'Me contacter' : 'Get in touch' }} <span aria-hidden="true">→</span>
+      </a>
+      <a class="button button--outline" href="https://github.com/ELGHAD" target="_blank" rel="noopener noreferrer">
+        {{ fr ? 'Voir tous mes dépôts' : 'View all repositories' }} <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </aside>
 </section>

@@ -1,12 +1,19 @@
 <section class="education">
-  <h1 class="education__title">Education</h1>
+  <h1 class="education__title">
+    {{ localeService.locale() === 'fr' ? 'Formation' : 'Education' }}
+  </h1>
 
   <div class="education__timeline">
     @for (entry of education; track entry.id) {
       <app-timeline-item
-        [title]="entry.degree"
-        [subtitle]="entry.institution + ' · ' + entry.location + (entry.specialization ? ' · ' + entry.specialization : '')"
-        [period]="entry.period"
+        [title]="entry.degree[localeService.locale()]"
+        [subtitle]="
+          entry.institution +
+          ' · ' +
+          entry.location[localeService.locale()] +
+          (entry.specialization ? ' · ' + entry.specialization[localeService.locale()] : '')
+        "
+        [period]="entry.period[localeService.locale()]"
         [highlight]="entry.highlight ?? false"
       ></app-timeline-item>
     }

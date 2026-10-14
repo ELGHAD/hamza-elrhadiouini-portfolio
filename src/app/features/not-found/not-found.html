@@ -1,0 +1,27 @@
+<section class="not-found" aria-labelledby="not-found-title">
+  <p class="not-found__code" aria-hidden="true">404</p>
+  <h1 id="not-found-title">
+    {{ localeService.locale() === 'fr' ? 'Cette page est introuvable.' : 'This page could not be found.' }}
+  </h1>
+  <p class="not-found__lead">
+    {{
+      localeService.locale() === 'fr'
+        ? 'Le lien est peut-être ancien ou mal saisi. Voici où reprendre la visite :'
+        : 'The link may be outdated or mistyped. Here is where you can pick things up:'
+    }}
+  </p>
+  <nav [attr.aria-label]="localeService.locale() === 'fr' ? 'Pages principales' : 'Main pages'">
+    <ul class="not-found__links">
+      @for (link of links; track link.path; let first = $first) {
+        <li>
+          <a
+            class="button"
+            [class.button--primary]="first"
+            [routerLink]="localeService.path(link.path)"
+            >{{ link.label[localeService.locale()] }}</a
+          >
+        </li>
+      }
+    </ul>
+  </nav>
+</section>

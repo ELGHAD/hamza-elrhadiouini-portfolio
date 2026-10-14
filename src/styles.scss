@@ -1,6 +1,6 @@
-@import 'app/styles/variables';
-@import 'app/styles/mixins';
-@import 'app/styles/typography';
+@use 'app/styles/variables';
+@use 'app/styles/mixins';
+@use 'app/styles/typography';
 
 * {
   box-sizing: border-box;
@@ -8,17 +8,59 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+  background: var(--bg);
 }
 
 body {
   margin: 0;
-  background: var(--color-bg);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  // No min-width here: with a classic 8px scrollbar, `min-width: 320px` overflowed 320px screens.
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter Variable', Inter, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+a {
+  color: var(--accent-text);
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent-text);
+  outline-offset: 3px;
 }
 
 ::selection {
-  background: var(--color-accent-soft);
-  color: var(--color-accent);
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+/*
+ * Scroll reveal (RevealDirective). Global on purpose: the trigger class `reveal-ready`
+ * sits on <html>, which component-scoped styles cannot target.
+ * Without JavaScript `reveal-ready` is never set, so content stays visible.
+ */
+.reveal {
+  transition:
+    opacity 450ms ease,
+    transform 450ms ease;
+  transition-delay: calc(var(--reveal-order, 0) * 45ms);
+}
+
+.reveal-ready .reveal:not(.is-visible) {
+  opacity: 0;
+  transform: translateY(14px);
 }
 
 ::-webkit-scrollbar {
@@ -26,14 +68,30 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-bg);
+  background: var(--bg);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border);
+  background: var(--border);
   border-radius: 4px;
 
   &:hover {
-    background: var(--color-accent);
+    background: var(--accent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .reveal-ready .reveal:not(.is-visible) {
+    opacity: 1;
+    transform: none;
   }
 }

@@ -1,62 +1,326 @@
+@let fr = localeService.locale() === 'fr';
+@let locale = localeService.locale();
 @if (project(); as p) {
-  <section class="project-detail">
-    <a routerLink="/projects" class="project-detail__back">&larr; Back to projects</a>
+  <article class="case" id="project-content">
+    <a [routerLink]="localeService.path('projects')" class="case__back">
+      <span aria-hidden="true">←</span> {{ fr ? 'Tous les projets' : 'All projects' }}
+    </a>
 
-    <h1 class="project-detail__title">{{ p.title }}</h1>
-    <p class="project-detail__tagline">{{ p.tagline }}</p>
-
-    <div class="project-detail__section">
-      <h2>The challenge</h2>
-      <p>{{ p.challenge }}</p>
-    </div>
-
-    <div class="project-detail__section">
-      <h2>The solution</h2>
-      <p>{{ p.solution }}</p>
-    </div>
-
-    <div class="project-detail__section">
-      <h2>Key features</h2>
-      <ul>
-        @for (feature of p.keyFeatures; track feature) {
-          <li>{{ feature }}</li>
-        }
-      </ul>
-    </div>
-
-    <div class="project-detail__section">
-      <h2>Business value</h2>
-      <p>{{ p.businessValue }}</p>
-    </div>
-
-    @if (p.collaboration) {
-      <div class="project-detail__section">
-        <h2>Collaboration</h2>
-        <p>{{ p.collaboration }}</p>
+    <header class="case-hero" appReveal>
+      <div class="case-hero__main">
+        <p class="eyebrow">
+          {{ p.group === 'professional' ? (fr ? 'Mission professionnelle' : 'Professional work') : groupLabel() }}
+        </p>
+        <h1>{{ p.title[locale] }}</h1>
+        <p class="case-hero__summary">{{ p.summary[locale] }}</p>
+        <ul class="case-hero__badges" [attr.aria-label]="fr ? 'Statut' : 'Status'">
+          @if (p.state; as state) {
+            <li class="badge badge--state">{{ state[locale] }}</li>
+          }
+          <li class="badge">
+            {{ p.team === 'pair' ? (fr ? 'En binôme' : 'In a pair') : fr ? 'Projet individuel' : 'Individual project' }}
+          </li>
+          @if (p.confidential) {
+            <li class="badge badge--muted">{{ fr ? 'Confidentiel' : 'Confidential' }}</li>
+          }
+        </ul>
+        <div class="case-hero__actions">
+          @if (p.links.live) {
+            <a class="button button--primary" [href]="p.links.live" target="_blank" rel="noopener noreferrer">
+              {{ fr ? 'Voir le site en production' : 'Visit the live site' }} <span aria-hidden="true">↗</span>
+            </a>
+          }
+          @if (repository(); as repo) {
+            <a
+              class="button"
+              [class.button--primary]="!p.links.live"
+              [class.button--outline]="p.links.live"
+              [href]="repo"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {{ fr ? 'Voir le code sur GitHub' : 'View the code on GitHub' }} <span aria-hidden="true">↗</span>
+            </a>
+          }
+          <a class="button button--outline" [routerLink]="localeService.path('contact')">
+            {{ fr ? 'En parler avec moi' : 'Talk to me about it' }}
+          </a>
+        </div>
       </div>
+
+      <aside class="fact-sheet" [attr.aria-label]="fr ? 'Fiche projet' : 'Project facts'">
+        <p class="fact-sheet__title">{{ fr ? 'Fiche projet' : 'Project facts' }}</p>
+        <dl>
+          @if (p.setting; as setting) {
+            <div>
+              <dt>{{ fr ? 'Cadre' : 'Setting' }}</dt>
+              <dd>{{ setting[locale] }}</dd>
+            </div>
+          }
+          @if (p.period; as period) {
+            <div>
+              <dt>{{ fr ? 'Période' : 'Period' }}</dt>
+              <dd>{{ period[locale] }}</dd>
+            </div>
+          }
+          <div>
+            <dt>{{ fr ? 'Équipe' : 'Team' }}</dt>
+            <dd>
+              {{
+                p.team === 'pair'
+                  ? fr
+                    ? 'En binôme avec un autre développeur'
+                    : 'In a pair with another developer'
+                  : fr
+                    ? 'Projet individuel'
+                    : 'Individual project'
+              }}
+            </dd>
+          </div>
+          <div>
+            <dt>{{ fr ? 'Code' : 'Code' }}</dt>
+            <dd>
+              @if (p.confidential) {
+                {{ fr ? 'Confidentiel : ni lien, ni donnée interne' : 'Confidential: no link, no internal data' }}
+              } @else if (repository()) {
+                {{ fr ? 'Public sur GitHub' : 'Public on GitHub' }}
+              } @else if (p.links.live) {
+                {{ fr ? 'Site public · code non lié' : 'Public site · code not linked' }}
+              } @else {
+                {{ fr ? 'Dépôt non lié pour l’instant' : 'Repository not linked yet' }}
+              }
+            </dd>
+          </div>
+        </dl>
+        <ul class="chip-list" [attr.aria-label]="fr ? 'Technologies principales' : 'Main technologies'">
+          @for (technology of p.techStack.slice(0, 8); track technology) {
+            <li>{{ technology }}</li>
+          }
+        </ul>
+      </aside>
+    </header>
+
+    @if (p.metrics?.length) {
+      <dl class="case-metrics" appReveal>
+        @for (metric of p.metrics; track $index) {
+          <div>
+            <dt>{{ metric.label[locale] }}</dt>
+            <dd>{{ metric.value[locale] }}</dd>
+          </div>
+        }
+      </dl>
     }
 
-    <div class="project-detail__section">
-      <h2>Tech stack</h2>
-      <div class="project-detail__stack">
-        @for (tech of p.techStack; track tech) {
-          <app-skill-tag [label]="tech"></app-skill-tag>
+    <div class="case-layout">
+      @if (sections().length > 2) {
+        <nav class="case-toc" [attr.aria-label]="fr ? 'Sommaire du projet' : 'Project contents'">
+          <p>{{ fr ? 'Sommaire' : 'Contents' }}</p>
+          <ol>
+            @for (section of sections(); track section.id) {
+              <li>
+                <a routerLink="." [fragment]="section.id">
+                  <span>{{ sectionNumber(section.id) }}</span>{{ section.label[locale] }}
+                </a>
+              </li>
+            }
+          </ol>
+        </nav>
+      }
+
+      <div class="case-content">
+        @if (p.context || p.task || p.role) {
+          <section class="case-section" id="context" aria-labelledby="context-title" appReveal>
+            <p class="eyebrow"><span class="case-section__index">{{ sectionNumber('context') }}</span>{{ fr ? 'Le point de départ' : 'Starting point' }}</p>
+            <h2 id="context-title">{{ fr ? 'Contexte & mission' : 'Context & mission' }}</h2>
+            <div class="story-grid">
+              @if (p.context; as context) {
+                <div class="story-card">
+                  <h3>{{ fr ? 'Le problème' : 'The problem' }}</h3>
+                  <p>{{ context[locale] }}</p>
+                </div>
+              }
+              @if (p.task; as task) {
+                <div class="story-card">
+                  <h3>{{ fr ? 'La mission' : 'The mission' }}</h3>
+                  <p>{{ task[locale] }}</p>
+                </div>
+              }
+            </div>
+            @if (p.role; as role) {
+              <div class="role-callout">
+                <h3>{{ p.team === 'pair' ? (fr ? 'En binôme' : 'As a pair') : fr ? 'Mon rôle' : 'My role' }}</h3>
+                <p>{{ role[locale] }}</p>
+              </div>
+            }
+          </section>
         }
+
+        @if (p.actions?.length) {
+          <section class="case-section" id="actions" aria-labelledby="actions-title" appReveal>
+            <p class="eyebrow"><span class="case-section__index">{{ sectionNumber('actions') }}</span>{{ fr ? 'Réalisation' : 'Execution' }}</p>
+            <h2 id="actions-title">{{ fr ? 'Ce que j’ai fait' : 'What I did' }}</h2>
+            <ol class="action-grid">
+              @for (action of p.actions; track $index) {
+                <li class="action-card">
+                  <span class="action-card__index" aria-hidden="true">{{ $index + 1 }}</span>
+                  <h3>{{ action.title[locale] }}</h3>
+                  <p>{{ action.text[locale] }}</p>
+                </li>
+              }
+            </ol>
+          </section>
+        }
+
+        @if (p.flows?.length || p.architecture) {
+          <section class="case-section" id="architecture" aria-labelledby="architecture-title" appReveal>
+            <p class="eyebrow"><span class="case-section__index">{{ sectionNumber('architecture') }}</span>{{ fr ? 'Conception' : 'Design' }}</p>
+            <h2 id="architecture-title">{{ fr ? 'Architecture' : 'Architecture' }}</h2>
+            @if (p.architecture; as architecture) {
+              <p class="case-section__lede">{{ architecture[locale] }}</p>
+            }
+            @for (flow of p.flows; track $index) {
+              <figure class="flow">
+                <figcaption>
+                  <strong>{{ flow.title[locale] }}</strong>
+                  @if (flow.caption; as caption) {
+                    <span>{{ caption[locale] }}</span>
+                  }
+                </figcaption>
+                <ol class="flow__steps">
+                  @for (step of flow.steps; track $index) {
+                    <li class="flow__step">
+                      <strong>{{ step.title[locale] }}</strong>
+                      @if (step.detail; as detail) {
+                        <span>{{ detail[locale] }}</span>
+                      }
+                    </li>
+                  }
+                </ol>
+                @if (flow.support?.length) {
+                  <div class="flow__support">
+                    <span class="flow__support-label">{{ fr ? 'En appui' : 'Supported by' }}</span>
+                    <ul>
+                      @for (item of flow.support; track $index) {
+                        <li>
+                          <strong>{{ item.title[locale] }}</strong>
+                          @if (item.detail; as detail) {
+                            <span>{{ detail[locale] }}</span>
+                          }
+                        </li>
+                      }
+                    </ul>
+                  </div>
+                }
+              </figure>
+            }
+          </section>
+        }
+
+        @if (p.features?.length) {
+          <section class="case-section" id="features" aria-labelledby="features-title" appReveal>
+            <p class="eyebrow"><span class="case-section__index">{{ sectionNumber('features') }}</span>{{ fr ? 'Le produit' : 'The product' }}</p>
+            <h2 id="features-title">{{ fr ? 'Ce que le projet permet' : 'What it does' }}</h2>
+            <ul class="check-list">
+              @for (feature of p.features; track $index) {
+                <li>{{ feature[locale] }}</li>
+              }
+            </ul>
+          </section>
+        }
+
+        @if (p.results?.length) {
+          <section class="case-section" id="results" aria-labelledby="results-title" appReveal>
+            <p class="eyebrow"><span class="case-section__index">{{ sectionNumber('results') }}</span>{{ fr ? 'Impact' : 'Impact' }}</p>
+            <h2 id="results-title">{{ fr ? 'Résultats' : 'Results' }}</h2>
+            <ul class="results-panel">
+              @for (result of p.results; track $index) {
+                <li>{{ result[locale] }}</li>
+              }
+            </ul>
+          </section>
+        }
+
+        @if (p.proves || p.nextSteps) {
+          <section class="case-section" id="takeaways" aria-labelledby="takeaways-title" appReveal>
+            <p class="eyebrow"><span class="case-section__index">{{ sectionNumber('takeaways') }}</span>{{ fr ? 'Bilan' : 'Wrap-up' }}</p>
+            <h2 id="takeaways-title">{{ fr ? 'Ce que j’en retiens' : 'Takeaways' }}</h2>
+            @if (p.proves; as proves) {
+              <blockquote class="proves">
+                <span>{{ fr ? 'Ce que ce projet démontre' : 'What this project proves' }}</span>
+                <p>{{ proves[locale] }}</p>
+              </blockquote>
+            }
+            @if (p.nextSteps; as nextSteps) {
+              <div class="next-steps">
+                <h3>{{ fr ? 'Enseignements et suite' : 'Learnings and next steps' }}</h3>
+                <p>{{ nextSteps[locale] }}</p>
+              </div>
+            }
+          </section>
+        }
+
+        <section class="case-section" id="stack" aria-labelledby="stack-title" appReveal>
+          <p class="eyebrow"><span class="case-section__index">{{ sectionNumber('stack') }}</span>{{ fr ? 'Technologies' : 'Technology' }}</p>
+          <h2 id="stack-title">{{ fr ? 'Stack complète' : 'Full stack' }}</h2>
+          <ul class="chip-list chip-list--large">
+            @for (technology of p.techStack; track technology) {
+              <li>{{ technology }}</li>
+            }
+          </ul>
+        </section>
       </div>
     </div>
 
-    <div class="project-detail__links">
-      @if (p.githubUrl) {
-        <app-cta-button label="View on GitHub" [href]="p.githubUrl" [external]="true" variant="primary"></app-cta-button>
+    <aside class="case-cta" aria-labelledby="case-cta-title" appReveal>
+      <div>
+        <h2 id="case-cta-title">
+          {{ fr ? 'Votre équipe a un besoin proche de celui-ci ?' : 'Does your team need something like this?' }}
+        </h2>
+        <p>
+          {{
+            fr
+              ? 'Je suis disponible immédiatement. Écrivez-moi : je réponds avec plaisir aux questions sur ce projet.'
+              : 'I am available immediately. Write to me: I am happy to answer questions about this project.'
+          }}
+        </p>
+      </div>
+      <a class="button button--primary" [routerLink]="localeService.path('contact')">
+        {{ fr ? 'Me contacter' : 'Get in touch' }} <span aria-hidden="true">→</span>
+      </a>
+    </aside>
+
+    <nav class="case-pagination" [attr.aria-label]="fr ? 'Navigation entre projets' : 'Project navigation'">
+      @if (previousProject(); as previous) {
+        <a [routerLink]="localeService.path('projects/' + previous.id)">
+          <span>← {{ fr ? 'Projet précédent' : 'Previous project' }}</span>
+          <strong>{{ previous.title[locale] }}</strong>
+        </a>
       }
-      @if (p.liveDemoUrl) {
-        <app-cta-button label="Live demo" [href]="p.liveDemoUrl" [external]="true" variant="secondary"></app-cta-button>
+      @if (nextProject(); as next) {
+        <a class="case-pagination__next" [routerLink]="localeService.path('projects/' + next.id)">
+          <span>{{ fr ? 'Projet suivant' : 'Next project' }} →</span>
+          <strong>{{ next.title[locale] }}</strong>
+        </a>
       }
-    </div>
-  </section>
+    </nav>
+
+    @if (relatedProjects().length) {
+      <section class="related-projects" aria-labelledby="related-projects-title" appReveal>
+        <p class="eyebrow">{{ fr ? 'À découvrir aussi' : 'Explore next' }}</p>
+        <h2 id="related-projects-title">{{ fr ? 'Projets proches' : 'Related projects' }}</h2>
+        <div class="related-projects__grid">
+          @for (related of relatedProjects(); track related.id) {
+            <app-project-card [project]="related"></app-project-card>
+          }
+        </div>
+      </section>
+    }
+  </article>
 } @else {
-  <section class="project-detail project-detail--not-found">
-    <p>Project not found.</p>
-    <a routerLink="/projects">Back to projects</a>
+  <section class="case case--not-found">
+    <h1>{{ fr ? 'Projet introuvable' : 'Project not found' }}</h1>
+    <a class="button button--outline" [routerLink]="localeService.path('projects')">
+      {{ fr ? 'Retour aux projets' : 'Back to projects' }}
+    </a>
   </section>
 }

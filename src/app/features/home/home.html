@@ -1,54 +1,354 @@
-<section class="hero">
-  <div class="hero__avatar">
-    <img src="assets/images/avatarr.jpg" alt="Illustrated avatar of Hamza Elrhadiouini" />
+<section class="home-hero" aria-labelledby="home-title">
+  <div class="home-hero__copy">
+    <p class="eyebrow home-hero__availability">
+      <span class="status-dot" aria-hidden="true"></span>
+      {{ profile.availability[localeService.locale()] }}
+    </p>
+    <p class="home-hero__hello">
+      {{ localeService.locale() === 'fr' ? 'Bonjour, je suis' : 'Hello, I’m' }}
+    </p>
+    <h1 id="home-title">{{ profile.name[localeService.locale()] }}</h1>
+    <p class="home-hero__title">{{ profile.title[localeService.locale()] }}</p>
+    <div class="role-line" aria-hidden="true">
+      @if (reducedMotion()) {
+        <span>Software Engineer · Full-Stack Developer · AI Engineer</span>
+      } @else {
+        <span>{{ typedRole() }}<i class="typing-caret"></i></span>
+      }
+    </div>
+    <span class="sr-only">Software Engineer · Full-Stack Developer · AI Engineer</span>
+    <p class="home-hero__intro">
+      @if (localeService.locale() === 'fr') {
+        Je développe des applications Java/Spring Boot et des produits web complets. Je transforme
+        aussi une documentation dispersée en copilote IA qui répond avec ses sources.
+      } @else {
+        I build Java/Spring Boot applications and full-stack web products. I also turn scattered
+        documentation into an AI copilot that answers with sources.
+      }
+    </p>
+    <div class="home-hero__actions">
+      <a class="button button--primary" [routerLink]="path('projects')">
+        {{ localeService.locale() === 'fr' ? 'Voir mes projets' : 'Explore my projects' }}
+        <span aria-hidden="true">↗</span>
+      </a>
+      <a class="button button--outline" [routerLink]="path('contact')">
+        {{ localeService.locale() === 'fr' ? 'Me contacter' : 'Contact me' }}
+      </a>
+      @if (localeService.locale() === 'fr' && profile.cvFr.status === 'verified') {
+        <a class="button button--quiet" [href]="profile.cvFr.fr" download>CV ↓</a>
+      } @else if (localeService.locale() === 'en' && profile.cvEn.status === 'verified') {
+        <a class="button button--quiet" [href]="profile.cvEn.en" download>Resume ↓</a>
+      }
+    </div>
+    <nav
+      class="home-hero__socials"
+      [attr.aria-label]="
+        localeService.locale() === 'fr' ? 'Liens professionnels' : 'Professional links'
+      "
+    >
+      <a [href]="profile.github[localeService.locale()]" target="_blank" rel="noopener noreferrer"
+        >GitHub <span aria-hidden="true">↗</span></a
+      >
+      @if (profile.linkedin.status === 'verified') {
+        <a
+          [href]="profile.linkedin[localeService.locale()]"
+          target="_blank"
+          rel="noopener noreferrer"
+          >LinkedIn <span aria-hidden="true">↗</span></a
+        >
+      }
+      <a [href]="'mailto:' + profile.email[localeService.locale()]">{{
+        profile.email[localeService.locale()]
+      }}</a>
+    </nav>
   </div>
-  <p class="hero__greeting">Hi, I'm Hamza — ELGH4D</p>
-  <h1 class="hero__title">Backend Engineer &amp; AI Systems Builder</h1>
-  <p class="hero__subtitle">
-    I design and ship backend systems and applied AI features — from
-    Spring Boot microservices to production RAG platforms.
-  </p>
-  <div class="hero__actions">
-    <app-cta-button label="View projects" routerLinkTo="/projects" variant="primary"></app-cta-button>
-    <app-cta-button label="Resume" href="assets/resume/Hamza_Elrhadiouini_CV.pdf" [external]="true" variant="secondary"></app-cta-button>
-    <app-cta-button label="Connect" routerLinkTo="/contact" variant="secondary"></app-cta-button>
-  </div>
+
+  <figure class="home-hero__visual">
+    <!-- LCP element: eager, high priority, explicit size to avoid layout shift. -->
+    <img
+      src="images/hamza-hero-1440.webp"
+      srcset="images/hamza-hero-720.webp 720w, images/hamza-hero-1440.webp 1440w"
+      sizes="(max-width: 600px) calc(100vw - 2rem), (max-width: 900px) 40rem, 70vw"
+      width="1444"
+      height="736"
+      fetchpriority="high"
+      decoding="async"
+      [attr.alt]="
+        localeService.locale() === 'fr'
+          ? 'Portrait de Hamza El Rhadiouini, entouré d’un schéma de pipeline RAG et de fenêtres de code'
+          : 'Portrait of Hamza El Rhadiouini, surrounded by a RAG pipeline diagram and code windows'
+      "
+    />
+  </figure>
 </section>
 
-<section class="narrative">
-  <div class="narrative__item">
-    <h3>Previously</h3>
-    <p>Two backend internships — Symfony/PHP at ALTEN Fès, then Spring Boot at RATITEC.</p>
-  </div>
-  <div class="narrative__item">
-    <h3>Currently</h3>
-    <p>Building AI Copilot, a production RAG platform, as a Software Engineer Intern at ALTEN Rabat.</p>
-  </div>
-  <div class="narrative__item">
-    <h3>Goal</h3>
-    <p>A backend engineering role with real ownership of AI-powered features.</p>
-  </div>
+<section
+  class="facts-strip"
+  [attr.aria-label]="localeService.locale() === 'fr' ? 'Repères chiffrés' : 'At a glance'"
+>
+  @for (metric of metrics; track metric.id; let index = $index) {
+    <a
+      class="fact"
+      [routerLink]="path(metric.path)"
+      [attr.data-metric-index]="index"
+      [style.--reveal-order]="index"
+      [attr.aria-label]="
+        metric.value + ' ' + metric.label[localeService.locale()] + ' · ' +
+        metric.detail[localeService.locale()]
+      "
+      appReveal
+    >
+      <span class="fact__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          @for (d of metricIcons[metric.icon]; track $index) {
+            <path [attr.d]="d" />
+          }
+        </svg>
+      </span>
+      <span class="fact__value" aria-hidden="true">{{ metricValue(metric, index) }}</span>
+      <span class="fact__label" aria-hidden="true">{{ metric.label[localeService.locale()] }}</span>
+      <span class="fact__detail" aria-hidden="true">{{ metric.detail[localeService.locale()] }}</span>
+      <span class="fact__arrow" aria-hidden="true">↗</span>
+    </a>
+  }
 </section>
 
-<section class="featured-projects">
-  <h2 class="featured-projects__title">Featured projects</h2>
-  <div class="featured-projects__grid">
-    @for (project of featuredProjects; track project.id) {
-      <app-project-card [project]="project"></app-project-card>
+<section id="services" class="content-section services-section">
+  <div class="section-heading section-heading--row" appReveal>
+    <div>
+      <p class="eyebrow">
+        {{ localeService.locale() === 'fr' ? 'Ce que je construis' : 'What I build' }}
+      </p>
+      <h2>
+        {{
+          localeService.locale() === 'fr'
+            ? 'Du besoin au produit livré.'
+            : 'From a real need to a shipped product.'
+        }}
+      </h2>
+    </div>
+    <a class="text-link" [routerLink]="path('services')"
+      >{{ localeService.locale() === 'fr' ? 'Détail des services' : 'Service details' }}
+      <span aria-hidden="true">↗</span></a
+    >
+  </div>
+  <div class="services-grid">
+    @for (service of services; track service.id; let index = $index) {
+      <article class="service-item" appReveal [style.--reveal-order]="index">
+        <span class="service-item__index">0{{ index + 1 }}</span>
+        <h3>{{ service.title[localeService.locale()] }}</h3>
+        <p>{{ service.description[localeService.locale()] }}</p>
+        <ul
+          class="chip-list"
+          [attr.aria-label]="localeService.locale() === 'fr' ? 'Technologies' : 'Technologies'"
+        >
+          @for (technology of service.stack; track technology) {
+            <li>{{ technology }}</li>
+          }
+        </ul>
+        <p class="service-item__evidence">
+          <span>{{ localeService.locale() === 'fr' ? 'Preuve' : 'Evidence' }}</span>&nbsp;
+          @for (proof of service.evidence; track proof.projectId + $index; let last = $last) {
+            <a [routerLink]="path('projects/' + proof.projectId)">{{ proof.label[localeService.locale()] }}</a
+            >@if (!last) {<span class="service-item__sep" aria-hidden="true"> · </span>}
+          }
+        </p>
+      </article>
     }
   </div>
 </section>
 
-<section class="skills-preview">
-  <p class="skills-preview__label">Core stack</p>
-  <div class="skills-preview__tags">
-    @for (skill of previewSkills; track skill) {
-      <app-skill-tag [label]="skill"></app-skill-tag>
+<section id="projects" class="content-section projects-section">
+  <div class="section-heading section-heading--row" appReveal>
+    <div>
+      <p class="eyebrow">
+        {{ localeService.locale() === 'fr' ? 'Sélection de projets' : 'Selected work' }}
+      </p>
+      <h2>
+        {{
+          localeService.locale() === 'fr'
+            ? 'Des missions réelles, et les projets qui le prouvent.'
+            : 'Real engagements, and the projects that prove it.'
+        }}
+      </h2>
+    </div>
+    <a class="text-link" [routerLink]="path('projects')"
+      >{{ localeService.locale() === 'fr' ? 'Tous les projets' : 'All projects' }}
+      <span aria-hidden="true">↗</span></a
+    >
+  </div>
+  <div class="projects-grid">
+    @for (project of projects; track project.id; let index = $index) {
+      <article
+        class="project-item"
+        [class.project-item--feature]="project.featured"
+        appReveal
+        [style.--reveal-order]="index"
+      >
+        <div class="project-item__topline">
+          <span class="eyebrow">{{ project.category[localeService.locale()] }}</span>
+          <span class="project-item__number">0{{ index + 1 }}</span>
+        </div>
+        <h3>
+          <a class="project-item__link" [routerLink]="path('projects/' + project.id)">{{
+            project.title[localeService.locale()]
+          }}</a>
+        </h3>
+        <p>{{ project.description[localeService.locale()] }}</p>
+        <ul
+          class="chip-list"
+          [attr.aria-label]="localeService.locale() === 'fr' ? 'Technologies' : 'Technologies'"
+        >
+          @for (technology of project.stack; track technology) {
+            <li>{{ technology }}</li>
+          }
+        </ul>
+        @if (project.result) {
+          <p class="project-item__result">{{ project.result[localeService.locale()] }}</p>
+        }
+        <div class="project-item__actions">
+          <a class="text-link" [routerLink]="path('projects/' + project.id)"
+            >{{ localeService.locale() === 'fr' ? 'Lire l’étude de cas' : 'Read the case study' }}
+            <span aria-hidden="true">→</span></a
+          >
+          @if (project.liveUrl) {
+            <a class="text-link" [href]="project.liveUrl" target="_blank" rel="noopener noreferrer"
+              >{{ localeService.locale() === 'fr' ? 'Site en ligne' : 'Live site' }}
+              <span aria-hidden="true">↗</span></a
+            >
+          }
+          @if (project.repoUrl) {
+            <a class="text-link" [href]="project.repoUrl" target="_blank" rel="noopener noreferrer"
+              >GitHub <span aria-hidden="true">↗</span></a
+            >
+          }
+          @if (project.confidential) {
+            <span class="project-item__note">{{
+              localeService.locale() === 'fr' ? 'Code confidentiel' : 'Confidential code'
+            }}</span>
+          }
+        </div>
+      </article>
     }
   </div>
 </section>
 
-<section class="contact-cta">
-  <p>Let's talk about an opportunity.</p>
-  <app-cta-button label="Contact me" routerLinkTo="/contact" variant="primary"></app-cta-button>
+<section id="experience-preview" class="content-section journey-section">
+  <div class="section-heading section-heading--row" appReveal>
+    <div>
+      <p class="eyebrow">{{ localeService.locale() === 'fr' ? 'Parcours' : 'Experience' }}</p>
+      <h2>
+        {{
+          localeService.locale() === 'fr'
+            ? 'Études et terrain, en parallèle.'
+            : 'Studying and shipping, side by side.'
+        }}
+      </h2>
+    </div>
+    <a class="text-link" [routerLink]="path('experience')"
+      >{{ localeService.locale() === 'fr' ? 'Parcours détaillé' : 'Full experience' }}
+      <span aria-hidden="true">↗</span></a
+    >
+  </div>
+  <app-journey-timeline [experiences]="experiences" [education]="education" />
+</section>
+
+<section id="stack-preview" class="content-section stack-section">
+  <div class="section-heading" appReveal>
+    <p class="eyebrow">{{ localeService.locale() === 'fr' ? 'Stack' : 'Technology' }}</p>
+    <h2>
+      {{
+        localeService.locale() === 'fr'
+          ? 'Des outils reliés à des projets.'
+          : 'Tools backed by project work.'
+      }}
+    </h2>
+  </div>
+  <div class="stack-grid">
+    @for (group of stack; track group.id; let index = $index) {
+      <article class="stack-group" appReveal [style.--reveal-order]="index">
+        <h3>{{ group.title[localeService.locale()] }}</h3>
+        <ul class="chip-list">
+          @for (technology of group.technologies; track technology) {
+            <li>{{ technology }}</li>
+          }
+        </ul>
+      </article>
+    }
+  </div>
+  <a class="text-link stack-section__more" [routerLink]="path('skills')"
+    >{{ localeService.locale() === 'fr' ? 'Voir toutes les compétences' : 'Browse all skills' }}
+    <span aria-hidden="true">↗</span></a
+  >
+</section>
+
+<section id="certifications-preview" class="content-section certifications-section">
+  <div class="section-heading section-heading--row" appReveal>
+    <div>
+      <p class="eyebrow">
+        {{ localeService.locale() === 'fr' ? 'Certifications' : 'Certifications' }}
+      </p>
+      <h2>
+        {{ localeService.locale() === 'fr' ? 'Apprendre et approfondir.' : 'Learning, applied.' }}
+      </h2>
+    </div>
+    <a class="text-link" [routerLink]="path('certifications')"
+      >{{ localeService.locale() === 'fr' ? 'Les 50 certificats' : 'All 50 certificates' }}
+      <span aria-hidden="true">↗</span></a
+    >
+  </div>
+  @defer (on viewport) {
+    <div class="certifications-grid">
+      @for (certificate of certifications; track certificate.id; let index = $index) {
+        <article
+          class="certificate-item"
+          [class.certificate-item--official]="certificate.issuer === 'Oracle'"
+          appReveal
+          [style.--reveal-order]="index"
+        >
+          <span class="certificate-item__kind">{{ certificate.kind[localeService.locale()] }}</span>
+          <h3>{{ certificate.title }}</h3>
+          <p>{{ certificate.issuer }}</p>
+        </article>
+      }
+    </div>
+  } @placeholder {
+    <div class="certifications-placeholder" aria-hidden="true"></div>
+  }
+</section>
+
+<app-testimonials />
+
+<section id="contact" class="contact-band" aria-labelledby="home-contact-title" appReveal>
+  <div class="contact-band__intro">
+    <p class="eyebrow">
+      {{ localeService.locale() === 'fr' ? 'Parlons de votre projet' : 'Have a project in mind?' }}
+    </p>
+    <h2 id="home-contact-title">
+      {{
+        localeService.locale() === 'fr'
+          ? 'Je suis disponible immédiatement.'
+          : 'I’m available immediately.'
+      }}
+    </h2>
+    <p>
+      {{
+        localeService.locale() === 'fr'
+          ? 'Écrivez-moi en quelques lignes, je vous réponds par e-mail.'
+          : 'Send me a few lines and I’ll reply by email.'
+      }}
+    </p>
+    <a class="button button--outline" [routerLink]="path('contact')"
+      >{{
+        localeService.locale() === 'fr' ? 'Toutes mes coordonnées' : 'All my contact details'
+      }}
+      <span aria-hidden="true">↗</span></a
+    >
+  </div>
+  <!-- The form and its validation code load only once the section scrolls into view. -->
+  @defer (on viewport) {
+    <app-contact-form idPrefix="home-contact" />
+  } @placeholder {
+    <div class="contact-form-placeholder" aria-hidden="true"></div>
+  }
 </section>
