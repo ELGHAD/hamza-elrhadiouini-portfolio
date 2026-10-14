@@ -138,7 +138,7 @@
             <span class="chapter__project-label">{{ text({ fr: 'Projet associé', en: 'Related project' }) }}</span>
             <strong>{{ text(project.title) }}</strong>
             <span>{{ text(project.summary) }}</span>
-            <span class="chapter__project-cta" aria-hidden="true">{{ text({ fr: 'Lire l’étude de cas', en: 'Read the case study' }) }} ↗</span>
+            <span class="chapter__project-cta" aria-hidden="true">{{ text({ fr: 'Lire l’étude de cas', en: 'Read the case study' }) }} <span class="icon-ne"></span></span>
           </a>
         }
       </article>
@@ -159,7 +159,7 @@
       </p>
       <div class="next-chapter__actions">
         <a class="button button--primary" [routerLink]="localeService.path('contact')"
-          >{{ text({ fr: 'Me contacter', en: 'Get in touch' }) }} <span aria-hidden="true">↗</span></a
+          >{{ text({ fr: 'Me contacter', en: 'Get in touch' }) }} <span class="icon-ne" aria-hidden="true"></span></a
         >
         <a class="button" [routerLink]="localeService.path('projects')">{{ text({ fr: 'Voir les projets', en: 'See the projects' }) }}</a>
       </div>

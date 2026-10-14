@@ -11,6 +11,7 @@ import { Skill, SkillCategoryId } from '../../core/models/skill.model';
 import { SkillsService } from '../../core/services/skills.service';
 import { LocaleService } from '../../core/services/locale.service';
 import { RevealDirective } from '../../shared/directives/reveal.directive';
+import { SpotlightDirective } from '../../shared/directives/spotlight.directive';
 
 /** One line-icon family (24×24 grid, round 1.6 stroke), one icon per category. */
 const CATEGORY_ICONS: Record<SkillCategoryId, string[]> = {
@@ -35,7 +36,7 @@ const CATEGORY_ICONS: Record<SkillCategoryId, string[]> = {
 
 @Component({
   selector: 'app-skills',
-  imports: [RevealDirective],
+  imports: [RevealDirective, SpotlightDirective],
   templateUrl: './skills.html',
   styleUrl: './skills.scss',
 })

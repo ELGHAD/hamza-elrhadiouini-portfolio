@@ -29,15 +29,12 @@
   text-transform: uppercase;
 }
 
+// Stays in place at the top of the page: as a sticky bar it covered the cards while scrolling.
 .skills-filters {
-  position: sticky;
-  top: 4.75rem;
-  z-index: 2;
   padding: 0.85rem;
   border: 1px solid var(--border);
   border-radius: 0.65rem;
-  background: color-mix(in srgb, var(--bg) 94%, transparent);
-  backdrop-filter: blur(12px);
+  background: var(--surface);
 
   &__categories,
   &__search {
@@ -355,9 +352,33 @@
     padding-inline: 1rem;
   }
   .skills-filters {
-    top: 4.5rem;
+    padding: 0.75rem;
+  }
+  // Categories on one row that swipes sideways instead of wrapping onto four lines.
+  .skills-filters__categories {
+    flex-wrap: nowrap;
+    margin-inline: -0.75rem;
+    padding-inline: 0.75rem;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    mask-image: linear-gradient(90deg, transparent, #000 0.75rem, #000 calc(100% - 1.5rem), transparent);
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    button {
+      flex: none;
+      scroll-snap-align: start;
+      white-space: nowrap;
+    }
   }
   .skills-filters__search label {
     flex-basis: 100%;
+  }
+  // Search field and "Clear" button share one line.
+  .skills-filters__search input {
+    min-width: 0;
   }
 }

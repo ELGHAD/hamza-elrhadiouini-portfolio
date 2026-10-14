@@ -1,16 +1,54 @@
 .theme-toggle {
+  position: relative;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 50%;
   background: transparent;
-  border: none;
-  cursor: pointer;
-  font-size: 1.25rem;
   color: inherit;
-  padding: 0.4rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 0.2s ease;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
 
   &:hover {
-    opacity: 0.7;
+    border-color: var(--border);
+    background: var(--accent-soft);
+    color: var(--accent-text);
+  }
+
+  &__icon {
+    grid-area: 1 / 1;
+    width: 1.25rem;
+    height: 1.25rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition:
+      transform 500ms cubic-bezier(0.34, 1.56, 0.64, 1),
+      opacity 300ms ease;
+  }
+
+  // Dark theme shows the moon; light theme turns it away and brings the sun in.
+  &__sun {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.4);
+  }
+
+  &.is-light {
+    .theme-toggle__moon {
+      opacity: 0;
+      transform: rotate(90deg) scale(0.4);
+    }
+
+    .theme-toggle__sun {
+      opacity: 1;
+      transform: none;
+    }
   }
 }

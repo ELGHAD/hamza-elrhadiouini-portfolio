@@ -15,18 +15,20 @@
   </h1>
 
   <nav class="language-choice__options" aria-label="Langue / Language">
-    <a class="language-option" [routerLink]="localeService.path('', 'fr')" lang="fr" hreflang="fr">
+    <a class="language-option" [routerLink]="localeService.path('', 'fr')"
+       [class.is-suggested]="suggested() === 'fr'" lang="fr" hreflang="fr">
       <span class="language-option__code" aria-hidden="true">FR</span>
       <span class="language-option__text">
-        <strong>Français</strong>
+        <strong>Français@if (suggested() === 'fr') {<em class="language-option__badge">Suggéré</em>}</strong>
         <span>Continuer en français</span>
       </span>
       <span class="language-option__arrow" aria-hidden="true">→</span>
     </a>
-    <a class="language-option" [routerLink]="localeService.path('', 'en')" lang="en" hreflang="en">
+    <a class="language-option" [routerLink]="localeService.path('', 'en')"
+       [class.is-suggested]="suggested() === 'en'" lang="en" hreflang="en">
       <span class="language-option__code" aria-hidden="true">EN</span>
       <span class="language-option__text">
-        <strong>English</strong>
+        <strong>English@if (suggested() === 'en') {<em class="language-option__badge">Suggested</em>}</strong>
         <span>Continue in English</span>
       </span>
       <span class="language-option__arrow" aria-hidden="true">→</span>

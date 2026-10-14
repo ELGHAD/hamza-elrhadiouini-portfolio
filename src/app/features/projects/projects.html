@@ -22,7 +22,7 @@
         </div>
       }
     </dl>
-    <nav class="projects-hero__jump" [attr.aria-label]="fr ? 'Aller à une section' : 'Jump to a section'">
+    <nav class="projects-hero__jump swipe-row" [attr.aria-label]="fr ? 'Aller à une section' : 'Jump to a section'">
       <a routerLink="." fragment="professional">{{ professionalGroup?.title?.[locale] }}</a>
       <a routerLink="." fragment="featured">{{ fr ? 'Projets phares' : 'Featured projects' }}</a>
       @for (section of domainSections; track section.info.id) {
@@ -37,7 +37,7 @@
       {{ fr ? 'Chercher un projet précis' : 'Looking for something specific?' }}
     </h2>
     <div
-      class="project-filters__categories"
+      class="project-filters__categories swipe-row"
       role="group"
       [attr.aria-label]="fr ? 'Filtrer par domaine' : 'Filter by domain'"
     >
@@ -199,7 +199,7 @@
                 </ul>
                 @if (repository(project); as repo) {
                   <a class="text-link" [href]="repo" target="_blank" rel="noopener noreferrer">
-                    GitHub <span aria-hidden="true">↗</span>
+                    GitHub <span class="icon-ne" aria-hidden="true"></span>
                     <span class="sr-only">: {{ project.title[locale] }}</span>
                   </a>
                 }
@@ -230,7 +230,7 @@
         {{ fr ? 'Me contacter' : 'Get in touch' }} <span aria-hidden="true">→</span>
       </a>
       <a class="button button--outline" href="https://github.com/ELGHAD" target="_blank" rel="noopener noreferrer">
-        {{ fr ? 'Voir tous mes dépôts' : 'View all repositories' }} <span aria-hidden="true">↗</span>
+        {{ fr ? 'Voir tous mes dépôts' : 'View all repositories' }} <span class="icon-ne" aria-hidden="true"></span>
       </a>
     </div>
   </aside>

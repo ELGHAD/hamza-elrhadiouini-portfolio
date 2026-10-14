@@ -137,7 +137,9 @@
     align-items: center;
     justify-content: space-between;
     gap: 0.5rem 1rem;
-    padding: 1rem 0 calc(1rem + env(safe-area-inset-bottom));
+    min-height: 3.5rem;
+    // Room on the right for the floating back-to-top button.
+    padding: 1rem 4rem calc(1rem + env(safe-area-inset-bottom)) 0;
     border-top: 1px solid var(--border);
 
     p {
@@ -147,27 +149,6 @@
     }
   }
 
-  &__top {
-    min-height: 2.75rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    color: var(--text-muted);
-    font-size: 0.78rem;
-    text-decoration: none;
-
-    span {
-      transition: transform 160ms ease;
-    }
-
-    &:hover {
-      color: var(--accent-text);
-
-      span {
-        transform: translateY(-2px);
-      }
-    }
-  }
 }
 
 .sr-only {
@@ -190,8 +171,7 @@
     animation: none;
   }
 
-  .site-footer__column a,
-  .site-footer__top span {
+  .site-footer__column a {
     transition: none;
   }
 }

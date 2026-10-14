@@ -1,0 +1,18 @@
+@for (row of rows; track row.id) {
+  <div class="marquee" [class.marquee--reverse]="row.reverse">
+    <div class="marquee__track" [style.--count]="row.items.length">
+      @for (copy of [0, 1]; track copy) {
+        <ul class="marquee__group" [attr.aria-hidden]="copy === 1 ? 'true' : null">
+          @for (tech of row.items; track tech.name) {
+            <li class="tech" [attr.title]="tech.name">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path [attr.d]="tech.icon.path" />
+              </svg>
+              <span>{{ tech.name }}</span>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+  </div>
+}

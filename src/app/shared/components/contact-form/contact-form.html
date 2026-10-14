@@ -1,5 +1,6 @@
 <form
   class="contact-form"
+  [class.contact-form--bare]="bare()"
   [formGroup]="form"
   (ngSubmit)="onSubmit()"
   novalidate
@@ -91,7 +92,7 @@
       {{ localeService.locale() === 'fr' ? 'Envoi en cours…' : 'Sending…' }}
     } @else {
       {{ localeService.locale() === 'fr' ? 'Envoyer le message' : 'Send message' }}
-      <span aria-hidden="true">↗</span>
+      <span class="icon-ne" aria-hidden="true"></span>
     }
   </button>
 

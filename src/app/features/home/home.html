@@ -1,5 +1,5 @@
 <section class="home-hero" aria-labelledby="home-title">
-  <div class="home-hero__copy">
+  <div class="home-hero__copy stagger-in">
     <p class="eyebrow home-hero__availability">
       <span class="status-dot" aria-hidden="true"></span>
       {{ profile.availability[localeService.locale()] }}
@@ -27,9 +27,9 @@
       }
     </p>
     <div class="home-hero__actions">
-      <a class="button button--primary" [routerLink]="path('projects')">
+      <a class="button button--primary sheen" [routerLink]="path('projects')">
         {{ localeService.locale() === 'fr' ? 'Voir mes projets' : 'Explore my projects' }}
-        <span aria-hidden="true">↗</span>
+        <span class="icon-ne" aria-hidden="true"></span>
       </a>
       <a class="button button--outline" [routerLink]="path('contact')">
         {{ localeService.locale() === 'fr' ? 'Me contacter' : 'Contact me' }}
@@ -47,14 +47,14 @@
       "
     >
       <a [href]="profile.github[localeService.locale()]" target="_blank" rel="noopener noreferrer"
-        >GitHub <span aria-hidden="true">↗</span></a
+        >GitHub <span class="icon-ne" aria-hidden="true"></span></a
       >
       @if (profile.linkedin.status === 'verified') {
         <a
           [href]="profile.linkedin[localeService.locale()]"
           target="_blank"
           rel="noopener noreferrer"
-          >LinkedIn <span aria-hidden="true">↗</span></a
+          >LinkedIn <span class="icon-ne" aria-hidden="true"></span></a
         >
       }
       <a [href]="'mailto:' + profile.email[localeService.locale()]">{{
@@ -63,11 +63,12 @@
     </nav>
   </div>
 
-  <figure class="home-hero__visual">
+  <figure class="home-hero__visual" appTilt>
     <!-- LCP element: eager, high priority, explicit size to avoid layout shift. -->
+    <!-- Dark and light versions of the picture follow the theme (see heroImage in home.ts). -->
     <img
-      src="images/hamza-hero-1440.webp"
-      srcset="images/hamza-hero-720.webp 720w, images/hamza-hero-1440.webp 1440w"
+      [attr.srcset]="heroImage().srcset"
+      [attr.src]="heroImage().src"
       sizes="(max-width: 600px) calc(100vw - 2rem), (max-width: 900px) 40rem, 70vw"
       width="1444"
       height="736"
@@ -97,6 +98,7 @@
         metric.detail[localeService.locale()]
       "
       appReveal
+      appSpotlight
     >
       <span class="fact__icon" aria-hidden="true">
         <svg viewBox="0 0 24 24" focusable="false">
@@ -108,7 +110,7 @@
       <span class="fact__value" aria-hidden="true">{{ metricValue(metric, index) }}</span>
       <span class="fact__label" aria-hidden="true">{{ metric.label[localeService.locale()] }}</span>
       <span class="fact__detail" aria-hidden="true">{{ metric.detail[localeService.locale()] }}</span>
-      <span class="fact__arrow" aria-hidden="true">↗</span>
+      <span class="fact__arrow icon-ne" aria-hidden="true"></span>
     </a>
   }
 </section>
@@ -129,12 +131,12 @@
     </div>
     <a class="text-link" [routerLink]="path('services')"
       >{{ localeService.locale() === 'fr' ? 'Détail des services' : 'Service details' }}
-      <span aria-hidden="true">↗</span></a
+      <span class="icon-ne" aria-hidden="true"></span></a
     >
   </div>
   <div class="services-grid">
     @for (service of services; track service.id; let index = $index) {
-      <article class="service-item" appReveal [style.--reveal-order]="index">
+      <article class="service-item" appReveal appSpotlight [style.--reveal-order]="index">
         <span class="service-item__index">0{{ index + 1 }}</span>
         <h3>{{ service.title[localeService.locale()] }}</h3>
         <p>{{ service.description[localeService.locale()] }}</p>
@@ -174,7 +176,7 @@
     </div>
     <a class="text-link" [routerLink]="path('projects')"
       >{{ localeService.locale() === 'fr' ? 'Tous les projets' : 'All projects' }}
-      <span aria-hidden="true">↗</span></a
+      <span class="icon-ne" aria-hidden="true"></span></a
     >
   </div>
   <div class="projects-grid">
@@ -183,6 +185,7 @@
         class="project-item"
         [class.project-item--feature]="project.featured"
         appReveal
+        appSpotlight
         [style.--reveal-order]="index"
       >
         <div class="project-item__topline">
@@ -214,18 +217,20 @@
           @if (project.liveUrl) {
             <a class="text-link" [href]="project.liveUrl" target="_blank" rel="noopener noreferrer"
               >{{ localeService.locale() === 'fr' ? 'Site en ligne' : 'Live site' }}
-              <span aria-hidden="true">↗</span></a
+              <span class="icon-ne" aria-hidden="true"></span></a
             >
           }
           @if (project.repoUrl) {
             <a class="text-link" [href]="project.repoUrl" target="_blank" rel="noopener noreferrer"
-              >GitHub <span aria-hidden="true">↗</span></a
+              >GitHub <span class="icon-ne" aria-hidden="true"></span></a
             >
           }
           @if (project.confidential) {
-            <span class="project-item__note">{{
-              localeService.locale() === 'fr' ? 'Code confidentiel' : 'Confidential code'
-            }}</span>
+            <span class="project-item__note"
+              ><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>{{
+                localeService.locale() === 'fr' ? 'Code confidentiel' : 'Confidential code'
+              }}</span
+            >
           }
         </div>
       </article>
@@ -247,39 +252,37 @@
     </div>
     <a class="text-link" [routerLink]="path('experience')"
       >{{ localeService.locale() === 'fr' ? 'Parcours détaillé' : 'Full experience' }}
-      <span aria-hidden="true">↗</span></a
+      <span class="icon-ne" aria-hidden="true"></span></a
     >
   </div>
   <app-journey-timeline [experiences]="experiences" [education]="education" />
 </section>
 
-<section id="stack-preview" class="content-section stack-section">
-  <div class="section-heading" appReveal>
-    <p class="eyebrow">{{ localeService.locale() === 'fr' ? 'Stack' : 'Technology' }}</p>
-    <h2>
-      {{
-        localeService.locale() === 'fr'
-          ? 'Des outils reliés à des projets.'
-          : 'Tools backed by project work.'
-      }}
-    </h2>
+<section id="stack-preview" class="stack-section" aria-labelledby="stack-title">
+  <div class="content-section">
+    <div class="section-heading section-heading--row" appReveal>
+      <div>
+        <p class="eyebrow">{{ localeService.locale() === 'fr' ? 'Stack' : 'Technology' }}</p>
+        <h2 id="stack-title">
+          {{
+            localeService.locale() === 'fr'
+              ? 'Des outils reliés à des projets.'
+              : 'Tools backed by project work.'
+          }}
+        </h2>
+      </div>
+      <a class="text-link" [routerLink]="path('skills')"
+        >{{ localeService.locale() === 'fr' ? 'Voir toutes les compétences' : 'Browse all skills' }}
+        <span class="icon-ne" aria-hidden="true"></span></a
+      >
+    </div>
   </div>
-  <div class="stack-grid">
-    @for (group of stack; track group.id; let index = $index) {
-      <article class="stack-group" appReveal [style.--reveal-order]="index">
-        <h3>{{ group.title[localeService.locale()] }}</h3>
-        <ul class="chip-list">
-          @for (technology of group.technologies; track technology) {
-            <li>{{ technology }}</li>
-          }
-        </ul>
-      </article>
-    }
-  </div>
-  <a class="text-link stack-section__more" [routerLink]="path('skills')"
-    >{{ localeService.locale() === 'fr' ? 'Voir toutes les compétences' : 'Browse all skills' }}
-    <span aria-hidden="true">↗</span></a
-  >
+  <!-- Full-width chain of logos; loads when it scrolls into view to keep the page light. -->
+  @defer (on viewport) {
+    <app-tech-marquee />
+  } @placeholder {
+    <div class="stack-placeholder" aria-hidden="true"></div>
+  }
 </section>
 
 <section id="certifications-preview" class="content-section certifications-section">
@@ -294,7 +297,7 @@
     </div>
     <a class="text-link" [routerLink]="path('certifications')"
       >{{ localeService.locale() === 'fr' ? 'Les 50 certificats' : 'All 50 certificates' }}
-      <span aria-hidden="true">↗</span></a
+      <span class="icon-ne" aria-hidden="true"></span></a
     >
   </div>
   @defer (on viewport) {
@@ -304,6 +307,7 @@
           class="certificate-item"
           [class.certificate-item--official]="certificate.issuer === 'Oracle'"
           appReveal
+          appSpotlight
           [style.--reveal-order]="index"
         >
           <span class="certificate-item__kind">{{ certificate.kind[localeService.locale()] }}</span>
@@ -342,7 +346,7 @@
       >{{
         localeService.locale() === 'fr' ? 'Toutes mes coordonnées' : 'All my contact details'
       }}
-      <span aria-hidden="true">↗</span></a
+      <span class="icon-ne" aria-hidden="true"></span></a
     >
   </div>
   <!-- The form and its validation code load only once the section scrolls into view. -->

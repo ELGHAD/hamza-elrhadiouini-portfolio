@@ -12,6 +12,27 @@ import { certificationsCount } from '../../core/data/certifications.data';
 import { ServiceIcon } from '../../core/models/service.model';
 import { LocaleService } from '../../core/services/locale.service';
 import { RevealDirective } from '../../shared/directives/reveal.directive';
+import { SpotlightDirective } from '../../shared/directives/spotlight.directive';
+import {
+  siCplusplus,
+  siDotnet,
+  siFlutter,
+  siOpenjdk,
+  siPhp,
+  siPython,
+  siTypescript,
+} from 'simple-icons';
+
+/** Logo of each language ecosystem (Simple Icons, drawn in the accent colour). */
+const ECOSYSTEM_LOGOS: Record<string, string> = {
+  java: siOpenjdk.path,
+  python: siPython.path,
+  typescript: siTypescript.path,
+  php: siPhp.path,
+  dotnet: siDotnet.path,
+  mobile: siFlutter.path,
+  systems: siCplusplus.path,
+};
 
 /** Line icons, same 24×24 family as the skills page. */
 const SERVICE_ICONS: Record<ServiceIcon, string[]> = {
@@ -30,7 +51,7 @@ const SERVICE_ICONS: Record<ServiceIcon, string[]> = {
 
 @Component({
   selector: 'app-services',
-  imports: [RouterLink, RevealDirective],
+  imports: [RouterLink, RevealDirective, SpotlightDirective],
   templateUrl: './services.html',
   styleUrl: './services.scss',
 })
@@ -42,12 +63,9 @@ export class ServicesComponent {
 
   private readonly projects = PROJECTS.filter((project) => project.status === 'verified');
 
-  /** Each ecosystem with the number of projects whose stack uses it. */
   readonly ecosystems = SERVICE_ECOSYSTEMS.map((ecosystem) => ({
     ...ecosystem,
-    projectCount: this.projects.filter((project) =>
-      project.techStack.some((technology) => ecosystem.match.test(technology)),
-    ).length,
+    logo: ECOSYSTEM_LOGOS[ecosystem.id],
   }));
 
   /** Every figure is counted from the data files. */

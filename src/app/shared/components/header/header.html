@@ -1,11 +1,12 @@
-<header class="site-header">
+@let locale = localeService.locale();
+<header class="site-header" [class.is-scrolled]="scrolled()" [class.is-open]="isMenuOpen">
   <div class="site-header__inner">
     <a
       [routerLink]="localeService.path()"
       class="site-header__logo"
       (click)="closeMenu()"
       [attr.aria-label]="
-        localeService.locale() === 'fr'
+        locale === 'fr'
           ? 'ELGHAD · Hamza El Rhadiouini, accueil'
           : 'ELGHAD · Hamza El Rhadiouini, home'
       "
@@ -19,9 +20,7 @@
       (click)="toggleMenu()"
       [attr.aria-expanded]="isMenuOpen"
       aria-controls="primary-navigation"
-      [attr.aria-label]="
-        isMenuOpen ? copy.closeMenu[localeService.locale()] : copy.openMenu[localeService.locale()]
-      "
+      [attr.aria-label]="isMenuOpen ? copy.closeMenu[locale] : copy.openMenu[locale]"
     >
       <span></span><span></span><span></span>
     </button>
@@ -30,63 +29,46 @@
       id="primary-navigation"
       class="site-header__nav"
       [class.site-header__nav--open]="isMenuOpen"
-      [attr.aria-label]="copy.navigation[localeService.locale()]"
+      [attr.aria-label]="copy.navigation[locale]"
     >
-      <a
-        [routerLink]="localeService.path('projects')"
-        routerLinkActive="active"
-        (click)="closeMenu()"
-        >{{ copy.projects[localeService.locale()] }}</a
-      >
-      <a
-        [routerLink]="localeService.path('experience')"
-        routerLinkActive="active"
-        (click)="closeMenu()"
-        >{{ copy.experience[localeService.locale()] }}</a
-      >
-      <a
-        [routerLink]="localeService.path('services')"
-        routerLinkActive="active"
-        (click)="closeMenu()"
-        >{{ copy.services[localeService.locale()] }}</a
-      >
-      <a
-        [routerLink]="localeService.path('skills')"
-        routerLinkActive="active"
-        (click)="closeMenu()"
-        >{{ copy.skills[localeService.locale()] }}</a
-      >
-      <a
-        [routerLink]="localeService.path('certifications')"
-        routerLinkActive="active"
-        (click)="closeMenu()"
-        >{{ copy.certifications[localeService.locale()] }}</a
-      >
-      <div
-        class="site-header__language"
-        role="group"
-        [attr.aria-label]="copy.language[localeService.locale()]"
-      >
-        <a
-          [routerLink]="localeService.switchPath('fr')"
-          [attr.aria-current]="localeService.locale() === 'fr' ? 'page' : null"
-          lang="fr"
-          >FR</a
-        >
-        <a
-          [routerLink]="localeService.switchPath('en')"
-          [attr.aria-current]="localeService.locale() === 'en' ? 'page' : null"
-          lang="en"
-          >EN</a
-        >
+      <div class="site-header__links">
+        @for (link of links; track link.path; let index = $index) {
+          <a
+            [routerLink]="localeService.path(link.path)"
+            routerLinkActive="active"
+            [style.--item]="index"
+            (click)="closeMenu()"
+            >{{ copy[link.label][locale] }}</a
+          >
+        }
       </div>
-      <app-theme-toggle></app-theme-toggle>
-      <a
-        class="site-header__contact"
-        [routerLink]="localeService.path('contact')"
-        (click)="closeMenu()"
-        >{{ copy.contact[localeService.locale()] }}</a
-      >
+      <div class="site-header__tools" [style.--item]="links.length">
+        <div class="site-header__language" role="group" [attr.aria-label]="copy.language[locale]">
+          <a
+            [routerLink]="localeService.switchPath('fr')"
+            [attr.aria-current]="locale === 'fr' ? 'page' : null"
+            lang="fr"
+            >FR</a
+          >
+          <a
+            [routerLink]="localeService.switchPath('en')"
+            [attr.aria-current]="locale === 'en' ? 'page' : null"
+            lang="en"
+            >EN</a
+          >
+        </div>
+        <app-theme-toggle></app-theme-toggle>
+        <a
+          class="site-header__contact"
+          [routerLink]="localeService.path('contact')"
+          routerLinkActive="is-current"
+          (click)="closeMenu()"
+          >{{ copy.contact[locale] }}<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M5 12h14M13 6l6 6-6 6" /></svg
+        ></a>
+      </div>
     </nav>
   </div>
+  <!-- Reading progress along the bottom edge. -->
+  <span class="site-header__progress" [style.transform]="'scaleX(' + progress() + ')'" aria-hidden="true"></span>
 </header>

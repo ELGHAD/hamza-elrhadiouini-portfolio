@@ -1,0 +1,24 @@
+<button
+  class="back-to-top"
+  type="button"
+  [class.is-visible]="visible()"
+  [attr.tabindex]="visible() ? null : -1"
+  [attr.aria-hidden]="visible() ? null : 'true'"
+  [attr.aria-label]="localeService.locale() === 'fr' ? 'Retour en haut de la page' : 'Back to top'"
+  (click)="toTop()"
+>
+  <svg class="back-to-top__ring" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+    <circle class="back-to-top__track" cx="24" cy="24" r="22" />
+    <circle
+      class="back-to-top__progress"
+      cx="24"
+      cy="24"
+      r="22"
+      [attr.stroke-dasharray]="ring"
+      [attr.stroke-dashoffset]="dashOffset()"
+    />
+  </svg>
+  <svg class="back-to-top__chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <path d="M6 14.5 12 8.5l6 6" />
+  </svg>
+</button>
