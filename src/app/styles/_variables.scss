@@ -13,6 +13,8 @@
   --surface-raised: #18211c;
   --accent-soft: rgb(16 185 129 / 14%);
   --shadow-glow: 0 0 24px rgb(16 185 129 / 8%);
+  --card-shadow: none;
+  --header-shadow: 0 10px 30px -20px rgb(0 0 0 / 60%);
 
   --color-bg: var(--bg);
   --color-surface: var(--surface);
@@ -42,18 +44,23 @@
 
 [data-theme='light'] {
   color-scheme: light;
-  --bg: #f8fafc;
-  --surface: #ffffff;
-  --border: #e2e8f0;
-  --text: #0f172a;
-  --text-muted: #475569;
-  --accent: #059669;
-  --accent-text: #047857;
+  // Clean near-white page; cards are a touch darker and carry a soft shadow, so they
+  // separate from the page without glare. Text is a deep green-black to match the accent.
+  --bg: #fcfdfc;
+  --surface: #f5f8f6;
+  --border: #dfe6e1;
+  --text: #15231c;
+  --text-muted: #4f5f57;
+  --accent: #0d9467;
+  --accent-text: #057152;
   --on-accent: #ffffff;
-  --danger: #b91c1c;
-  --surface-raised: #f1f5f9;
-  --accent-soft: rgb(5 150 105 / 10%);
-  --shadow-glow: 0 0 24px rgb(5 150 105 / 6%);
+  --danger: #b42318;
+  --surface-raised: #ecf1ee;
+  --accent-soft: rgb(13 148 103 / 9%);
+  --shadow-glow: 0 0 24px rgb(13 148 103 / 6%);
+  // Depth for cards, which flat borders alone do not give on a light page.
+  --card-shadow: 0 1px 2px rgb(21 35 28 / 4%), 0 10px 28px -16px rgb(21 35 28 / 14%);
+  --header-shadow: 0 10px 30px -22px rgb(21 35 28 / 35%);
 
   --color-bg: var(--bg);
   --color-surface: var(--surface);

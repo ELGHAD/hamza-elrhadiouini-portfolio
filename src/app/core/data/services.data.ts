@@ -194,20 +194,53 @@ export const SERVICES: ServiceOffer[] = [
   },
 ];
 
-/** Language ecosystems shipped in; project counts are computed on the page. */
+/**
+ * Language ecosystems I have shipped in, described by what I build with each one
+ * (no per-language project counts: a count of one reads as a weakness, not as range).
+ */
 export const SERVICE_ECOSYSTEMS: ServiceEcosystem[] = [
-  { id: 'java', name: 'Java', frameworks: 'Spring Boot · Spring Cloud · JPA · Swing', match: /^(Java( 17)?|Spring Boot.*|Swing)$/ },
-  { id: 'python', name: 'Python', frameworks: 'FastAPI · Flask · Django · TensorFlow', match: /^(Python|FastAPI|Flask|Django.*)$/ },
+  {
+    id: 'java',
+    name: 'Java',
+    focus: t('Backends & microservices', 'Backends & microservices'),
+    frameworks: ['Spring Boot', 'Spring Cloud', 'JPA'],
+  },
+  {
+    id: 'python',
+    name: 'Python',
+    focus: t('IA, données & API', 'AI, data & APIs'),
+    frameworks: ['FastAPI', 'Django', 'TensorFlow'],
+  },
   {
     id: 'typescript',
-    name: 'TypeScript / JavaScript',
-    frameworks: 'Angular · React · Next.js · Node.js',
-    match: /^(TypeScript|JavaScript|Angular|React( 19)?|Next\.js.*|Node\.js)$/,
+    name: 'TypeScript',
+    focus: t('Web & full-stack', 'Web & full-stack'),
+    frameworks: ['Angular', 'React', 'Next.js'],
   },
-  { id: 'php', name: 'PHP', frameworks: 'Laravel · Symfony', match: /^(PHP.*|Laravel.*|Symfony.*)$/ },
-  { id: 'dotnet', name: 'C# / .NET', frameworks: 'ASP.NET Core · EF Core', match: /^(C#|\.NET.*|ASP\.NET Core MVC)$/ },
-  { id: 'mobile', name: 'Mobile', frameworks: 'Flutter · Kotlin · Android Jetpack', match: /^(Flutter|Kotlin)$/ },
-  { id: 'cpp', name: 'C++', frameworks: 'C++20 · CMake · STL', match: /^C\+\+/ },
+  {
+    id: 'php',
+    name: 'PHP',
+    focus: t('Applications web MVC', 'MVC web applications'),
+    frameworks: ['Laravel', 'Symfony'],
+  },
+  {
+    id: 'dotnet',
+    name: 'C# / .NET',
+    focus: t('Applications d’entreprise', 'Business applications'),
+    frameworks: ['ASP.NET Core', 'EF Core'],
+  },
+  {
+    id: 'mobile',
+    name: 'Mobile',
+    focus: t('Android & multiplateforme', 'Android & cross-platform'),
+    frameworks: ['Flutter', 'Kotlin', 'Jetpack'],
+  },
+  {
+    id: 'systems',
+    name: 'C / C++',
+    focus: t('Algorithmique & performance', 'Algorithms & performance'),
+    frameworks: ['C++20', 'STL', 'CMake'],
+  },
 ];
 
 /** A new ecosystem at each step: dates and places come from the experience and projects data. */

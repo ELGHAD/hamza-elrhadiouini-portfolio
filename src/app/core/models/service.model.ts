@@ -33,9 +33,9 @@ export interface ServiceOffer {
 export interface ServiceEcosystem {
   id: string;
   name: string;
-  frameworks: string;
-  /** Matches a project's techStack entries that belong to this ecosystem. */
-  match: RegExp;
+  /** What I build with it, in a few words. */
+  focus: BilingualText;
+  frameworks: string[];
 }
 
 /** One step of the learning path: a year, a new ecosystem, where it happened. */

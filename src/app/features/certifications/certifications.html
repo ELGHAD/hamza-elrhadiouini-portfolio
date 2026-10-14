@@ -54,13 +54,13 @@
               @if (certification.verifyUrl) {
                 <a [href]="certification.verifyUrl" target="_blank" rel="noopener noreferrer"
                   >{{ localeService.locale() === 'fr' ? 'Vérifier' : 'Verify' }}
-                  <span aria-hidden="true">↗</span></a
+                  <span class="icon-ne" aria-hidden="true"></span></a
                 >
               }
               @if (certification.courseUrl) {
                 <a [href]="certification.courseUrl" target="_blank" rel="noopener noreferrer"
                   >{{ localeService.locale() === 'fr' ? 'Parcours' : 'Program' }}
-                  <span aria-hidden="true">↗</span></a
+                  <span class="icon-ne" aria-hidden="true"></span></a
                 >
               }
             </div>
@@ -115,7 +115,7 @@
                             [href]="certification.verifyUrl"
                             target="_blank"
                             rel="noopener noreferrer"
-                            >{{ localeService.locale() === 'fr' ? 'Vérifier' : 'Verify' }} ↗</a
+                            >{{ localeService.locale() === 'fr' ? 'Vérifier' : 'Verify' }} <span class="icon-ne" aria-hidden="true"></span></a
                           >
                         }
                         @if (certification.courseUrl) {
@@ -123,7 +123,7 @@
                             [href]="certification.courseUrl"
                             target="_blank"
                             rel="noopener noreferrer"
-                            >{{ localeService.locale() === 'fr' ? 'Parcours' : 'Program' }} ↗</a
+                            >{{ localeService.locale() === 'fr' ? 'Parcours' : 'Program' }} <span class="icon-ne" aria-hidden="true"></span></a
                           >
                         }
                       </div>
@@ -157,7 +157,7 @@
                             @if (child.verifyUrl) {
                               <a [href]="child.verifyUrl" target="_blank" rel="noopener noreferrer"
                                 >{{ localeService.locale() === 'fr' ? 'Vérifier' : 'Verify' }}
-                                <span aria-hidden="true">↗</span></a
+                                <span class="icon-ne" aria-hidden="true"></span></a
                               >
                             }
                           </li>
@@ -175,7 +175,7 @@
                     @if (certification.verifyUrl) {
                       <a [href]="certification.verifyUrl" target="_blank" rel="noopener noreferrer"
                         >{{ localeService.locale() === 'fr' ? 'Vérifier' : 'Verify' }}
-                        <span aria-hidden="true">↗</span></a
+                        <span class="icon-ne" aria-hidden="true"></span></a
                       >
                     }
                   </article>

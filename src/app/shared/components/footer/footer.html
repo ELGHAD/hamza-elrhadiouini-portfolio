@@ -53,24 +53,11 @@
             GitHub <span class="sr-only">{{ fr ? '(nouvel onglet)' : '(new tab)' }}</span>
           </a>
         </li>
-        @if (cv(); as cvPath) {
-          <li>
-            <a class="site-footer__contact" [href]="cvPath" download>
-              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <path d="M12 4v11" /><path d="M7 10l5 5 5-5" /><path d="M5 20h14" />
-              </svg>
-              {{ fr ? 'Télécharger mon CV' : 'Download my resume' }}
-            </a>
-          </li>
-        }
       </ul>
     </div>
   </div>
 
   <div class="site-footer__bar">
     <p>&copy; {{ buildYear }} Hamza EL RHADIOUINI</p>
-    <a class="site-footer__top" href="#main-content" (click)="scrollToTop($event)">
-      {{ fr ? 'Retour en haut' : 'Back to top' }} <span aria-hidden="true">↑</span>
-    </a>
   </div>
 </footer>

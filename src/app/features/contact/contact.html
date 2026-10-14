@@ -1,76 +1,160 @@
+@let fr = localeService.locale() === 'fr';
+@let locale = localeService.locale();
 <section class="contact-page" aria-labelledby="contact-title">
-  <header class="contact-page__intro">
+  <header class="contact-hero stagger-in">
     <p class="eyebrow">Contact</p>
     <h1 id="contact-title">
-      {{
-        localeService.locale() === 'fr'
-          ? 'Parlons de votre projet.'
-          : 'Let’s talk about your project.'
-      }}
+      {{ fr ? 'Parlons-en,' : 'Let’s talk,' }}
+      <span>{{ fr ? 'quel que soit le sujet.' : 'whatever it’s about.' }}</span>
     </h1>
-    <p>
+    <p class="contact-hero__lead">
       {{
-        localeService.locale() === 'fr'
-          ? 'Je suis disponible immédiatement. Décrivez votre besoin en quelques lignes, je vous réponds par e-mail.'
-          : 'I’m available immediately. Describe what you need in a few lines and I’ll reply by email.'
+        fr
+          ? 'Une opportunité de poste, une mission freelance, une collaboration ou simplement une question : ma boîte de réception est ouverte, et je lis chaque message.'
+          : 'A job opportunity, a freelance project, a collaboration or simply a question: my inbox is open, and I read every message.'
       }}
     </p>
+    <ul class="contact-hero__facts" [attr.aria-label]="fr ? 'En bref' : 'At a glance'">
+      <li class="fact-pill fact-pill--live">
+        <span class="fact-pill__dot" aria-hidden="true"></span>{{ profile.availability[locale] }}
+      </li>
+      <li class="fact-pill">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" />
+        </svg>
+        {{ fr ? 'Réponse sous 24 h, 7 j/7' : 'Reply within 24 hours, 7 days a week' }}
+      </li>
+      <li class="fact-pill">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M12 21s7-6.1 7-11.5A7 7 0 0 0 5 9.5C5 14.9 12 21 12 21z" /><circle cx="12" cy="9.5" r="2.5" />
+        </svg>
+        {{ fr ? 'Maroc' : 'Morocco' }} · {{ timeZoneLabel }}
+      </li>
+    </ul>
   </header>
 
-  <div class="contact-layout">
-    <app-contact-form idPrefix="contact" />
+  <div class="contact-layout stagger-in">
+    <article class="contact-card contact-card--form" appSpotlight aria-labelledby="contact-form-title">
+      <h2 id="contact-form-title">{{ fr ? 'Envoyer un message' : 'Send a message' }}</h2>
+      <p class="contact-card__intro">
+        {{ fr ? 'Choisissez un sujet pour démarrer, ou écrivez librement.' : 'Pick a topic to get started, or write freely.' }}
+      </p>
+      <div class="topics" role="group" [attr.aria-label]="fr ? 'Sujet du message' : 'Message topic'">
+        @for (topic of topics; track topic.id) {
+          <button
+            type="button"
+            class="topic"
+            [class.is-active]="activeTopic() === topic.id"
+            [attr.aria-pressed]="activeTopic() === topic.id"
+            (click)="pickTopic(topic)"
+          >
+            {{ text(topic.label) }}
+          </button>
+        }
+      </div>
+      <app-contact-form idPrefix="contact" [bare]="true" />
+    </article>
 
-    <aside
-      class="contact-details"
-      [attr.aria-label]="localeService.locale() === 'fr' ? 'Coordonnées' : 'Contact details'"
-    >
-      <div class="contact-details__block">
-        <p class="eyebrow">{{ localeService.locale() === 'fr' ? 'E-mail' : 'Email' }}</p>
-        <a
-          class="contact-details__email"
-          [href]="'mailto:' + profile.email[localeService.locale()]"
-          >{{ profile.email[localeService.locale()] }}</a
-        >
-        <button class="copy-button" type="button" (click)="copyEmail()">
-          @if (copyState() === 'copied') {
-            <span aria-hidden="true">✓</span>
-            {{ localeService.locale() === 'fr' ? 'E-mail copié' : 'Email copied' }}
-          } @else {
-            {{ localeService.locale() === 'fr' ? 'Copier l’e-mail' : 'Copy email' }}
-          }
-        </button>
-        <p class="contact-details__copy-status" aria-live="polite" aria-atomic="true">
-          {{ copyStatus() }}
+    <aside class="contact-side stagger-in" [attr.aria-label]="fr ? 'Coordonnées' : 'Contact details'">
+      <section class="contact-card" appSpotlight aria-labelledby="contact-details-title">
+        <h2 id="contact-details-title">{{ fr ? 'Coordonnées' : 'Contact details' }}</h2>
+        <ul class="details">
+          <li class="detail">
+            <span class="detail__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false"><path d="M3 5h18v14H3z" /><path d="m3 6 9 7 9-7" /></svg>
+            </span>
+            <div class="detail__body">
+              <span class="detail__label">{{ fr ? 'E-mail' : 'Email' }}</span>
+              <a class="detail__value detail__email" [href]="'mailto:' + profile.email[locale]">{{ profile.email[locale] }}</a>
+              <button class="copy-button" type="button" (click)="copyEmail()">
+                @if (copyState() === 'copied') {
+                  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m5 12.5 4.5 4.5L19 7.5" /></svg>
+                  {{ fr ? 'Copié' : 'Copied' }}
+                } @else {
+                  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <rect x="8" y="8" width="12" height="12" rx="2" /><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3" />
+                  </svg>
+                  {{ fr ? 'Copier' : 'Copy' }}
+                }
+              </button>
+              <span class="sr-only" aria-live="polite" aria-atomic="true">{{ copyStatus() }}</span>
+            </div>
+          </li>
+
+          <li class="detail">
+            <span class="detail__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false">
+                <circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" />
+              </svg>
+            </span>
+            <div class="detail__body">
+              <span class="detail__label">{{ fr ? 'Heure locale' : 'Local time' }} · {{ fr ? 'Maroc' : 'Morocco' }} ({{ timeZoneLabel }})</span>
+              @if (localTime(); as time) {
+                <span class="detail__value detail__time">
+                  {{ time.day }} <strong>{{ time.time }}</strong>
+                </span>
+                <span class="detail__hint" [class.is-on]="working()">
+                  <span class="detail__hint-dot" aria-hidden="true"></span>
+                  {{
+                    working()
+                      ? fr ? 'En pleine journée de travail : réponse rapide probable' : 'Within my working hours: a quick reply is likely'
+                      : fr ? 'Hors horaires de travail : je réponds dès 9 h' : 'Outside working hours: I’ll reply from 9 am'
+                  }}
+                </span>
+              } @else {
+                <span class="detail__value detail__time">{{ fr ? 'Tous les jours, 9 h – 19 h' : 'Every day, 9 am – 7 pm' }}</span>
+              }
+            </div>
+          </li>
+
+          <li class="detail">
+            <span class="detail__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg>
+            </span>
+            <div class="detail__body">
+              <span class="detail__label">{{ fr ? 'Délai de réponse' : 'Response time' }}</span>
+              <span class="detail__value">{{ fr ? 'Sous 24 h, 7 jours sur 7' : 'Within 24 hours, 7 days a week' }}</span>
+            </div>
+          </li>
+
+          <li class="detail">
+            <span class="detail__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false"><path d="M4 6h16v14H4z" /><path d="M4 10h16M8 3v4M16 3v4" /></svg>
+            </span>
+            <div class="detail__body">
+              <span class="detail__label">{{ fr ? 'Statut actuel' : 'Current status' }}</span>
+              <span class="status-pill">{{ profile.availability[locale] }}</span>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <section class="contact-card" appSpotlight aria-labelledby="contact-social-title">
+        <h2 id="contact-social-title">{{ fr ? 'Réseaux' : 'Elsewhere' }}</h2>
+        <p class="contact-card__intro">
+          {{ fr ? 'Suivez mon travail ou écrivez-moi là où vous préférez.' : 'Follow my work or reach me wherever you prefer.' }}
         </p>
-      </div>
-
-      <div class="contact-details__block">
-        <p class="eyebrow">{{ localeService.locale() === 'fr' ? 'Disponibilité' : 'Availability' }}</p>
-        <p>{{ profile.availability[localeService.locale()] }}</p>
-      </div>
-
-      <nav
-        class="contact-details__links"
-        [attr.aria-label]="
-          localeService.locale() === 'fr' ? 'Liens professionnels' : 'Professional links'
-        "
-      >
-        <a
-          [href]="profile.linkedin[localeService.locale()]"
-          target="_blank"
-          rel="noopener noreferrer"
-          >LinkedIn <span aria-hidden="true">↗</span></a
-        >
-        <a [href]="profile.github[localeService.locale()]" target="_blank" rel="noopener noreferrer"
-          >GitHub <span aria-hidden="true">↗</span></a
-        >
-      </nav>
-
-      @if (localeService.locale() === 'fr' && profile.cvFr.status === 'verified') {
-        <a class="button button--outline" [href]="profile.cvFr.fr" download>CV français ↓</a>
-      } @else if (localeService.locale() === 'en' && profile.cvEn.status === 'verified') {
-        <a class="button button--outline" [href]="profile.cvEn.en" download>English resume ↓</a>
-      }
+        <nav class="socials" [attr.aria-label]="fr ? 'Liens professionnels' : 'Professional links'">
+          <a class="social" [href]="profile.github[locale]" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M9 19c-4 1.3-4-2-6-2.5" /><path d="M15 21v-3.5a3 3 0 0 0-.9-2.3c3-.3 6-1.5 6-6.7a5.2 5.2 0 0 0-1.4-3.6 4.8 4.8 0 0 0-.1-3.6s-1.1-.3-3.6 1.4a12.4 12.4 0 0 0-6.5 0C6.1 1 5 1.3 5 1.3a4.8 4.8 0 0 0-.1 3.6A5.2 5.2 0 0 0 3.5 8.5c0 5.2 3 6.4 6 6.7a3 3 0 0 0-.9 2.3V21" />
+            </svg>
+            GitHub <span class="sr-only">{{ fr ? '(nouvel onglet)' : '(new tab)' }}</span>
+          </a>
+          @if (profile.linkedin.status === 'verified') {
+            <a class="social" [href]="profile.linkedin[locale]" target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M4 4h16v16H4z" /><path d="M8 10v6" /><path d="M8 7.5v.01" /><path d="M12 16v-6" /><path d="M12 12.5a2.5 2.5 0 0 1 5 0V16" />
+              </svg>
+              LinkedIn <span class="sr-only">{{ fr ? '(nouvel onglet)' : '(new tab)' }}</span>
+            </a>
+          }
+          <a class="social" [href]="'mailto:' + profile.email[locale]">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 5h18v14H3z" /><path d="m3 6 9 7 9-7" /></svg>
+            {{ fr ? 'E-mail' : 'Email' }}
+          </a>
+        </nav>
+      </section>
     </aside>
   </div>
 </section>

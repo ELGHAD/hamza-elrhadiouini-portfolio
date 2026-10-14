@@ -27,7 +27,7 @@
         <div class="case-hero__actions">
           @if (p.links.live) {
             <a class="button button--primary" [href]="p.links.live" target="_blank" rel="noopener noreferrer">
-              {{ fr ? 'Voir le site en production' : 'Visit the live site' }} <span aria-hidden="true">↗</span>
+              {{ fr ? 'Voir le site en production' : 'Visit the live site' }} <span class="icon-ne" aria-hidden="true"></span>
             </a>
           }
           @if (repository(); as repo) {
@@ -39,7 +39,7 @@
               target="_blank"
               rel="noopener noreferrer"
             >
-              {{ fr ? 'Voir le code sur GitHub' : 'View the code on GitHub' }} <span aria-hidden="true">↗</span>
+              {{ fr ? 'Voir le code sur GitHub' : 'View the code on GitHub' }} <span class="icon-ne" aria-hidden="true"></span>
             </a>
           }
           <a class="button button--outline" [routerLink]="localeService.path('contact')">

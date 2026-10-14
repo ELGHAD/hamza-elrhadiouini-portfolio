@@ -105,30 +105,69 @@
 
 .ecosystem {
   display: grid;
+  align-content: start;
   gap: 0.3rem;
-  padding: 0.95rem 1rem;
+  padding: 1.1rem;
   border: 1px solid var(--border);
-  border-radius: 0.75rem;
+  border-radius: 0.9rem;
   background:
     radial-gradient(circle at 100% 0%, var(--accent-soft), transparent 60%),
     var(--surface);
+  transition:
+    border-color 200ms ease,
+    transform 250ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  &:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+
+    .ecosystem__logo {
+      transform: rotate(-8deg) scale(1.08);
+    }
+  }
+
+  &__logo {
+    display: grid;
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-bottom: 0.5rem;
+    place-items: center;
+    border-radius: 0.7rem;
+    background: var(--accent-soft);
+    color: var(--accent-text);
+    transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    svg {
+      width: 1.35rem;
+      height: 1.35rem;
+      fill: currentColor;
+    }
+  }
 
   strong {
     color: var(--text);
-    font-size: 0.98rem;
+    font-size: 1rem;
+  }
+
+  &__focus {
+    color: var(--text-muted);
+    font-size: 0.8rem;
   }
 
   &__frameworks {
-    color: var(--text-muted);
-    font-size: 0.78rem;
-    line-height: 1.45;
-  }
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin-top: 0.5rem;
 
-  &__count {
-    margin-top: 0.2rem;
-    color: var(--accent-text);
-    font-family: 'JetBrains Mono Variable', monospace;
-    font-size: 0.68rem;
+    span {
+      padding: 0.15rem 0.45rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono Variable', monospace;
+      font-size: 0.64rem;
+    }
   }
 }
 
@@ -553,5 +592,16 @@
 
   .service-card {
     padding: 1.1rem;
+  }
+}
+
+// Ecosystems two by two on phones: seven full-width cards made a long scroll.
+@media (max-width: 600px) {
+  .ecosystem-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ecosystem {
+    padding: 0.9rem;
   }
 }

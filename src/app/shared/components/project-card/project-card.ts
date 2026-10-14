@@ -3,10 +3,11 @@ import { RouterLink } from '@angular/router';
 import { LocaleService } from '../../../core/services/locale.service';
 import { ProjectsService } from '../../../core/services/projects.service';
 import { Project } from '../../../core/models/project.model';
+import { SpotlightDirective } from '../../directives/spotlight.directive';
 
 @Component({
   selector: 'app-project-card',
-  imports: [RouterLink],
+  imports: [RouterLink, SpotlightDirective],
   templateUrl: './project-card.html',
   styleUrl: './project-card.scss',
 })

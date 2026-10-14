@@ -30,12 +30,17 @@
       <h2 id="ecosystems-title">{{ fr ? 'Les écosystèmes dans lesquels j’ai livré' : 'Ecosystems I have shipped in' }}</h2>
     </div>
     <ul class="ecosystem-list">
-      @for (ecosystem of ecosystems; track ecosystem.id) {
-        <li class="ecosystem">
+      @for (ecosystem of ecosystems; track ecosystem.id; let index = $index) {
+        <li class="ecosystem" appSpotlight [style.--i]="index">
+          <span class="ecosystem__logo" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false"><path [attr.d]="ecosystem.logo" /></svg>
+          </span>
           <strong>{{ ecosystem.name }}</strong>
-          <span class="ecosystem__frameworks">{{ ecosystem.frameworks }}</span>
-          <span class="ecosystem__count">
-            {{ ecosystem.projectCount }} {{ fr ? (ecosystem.projectCount > 1 ? 'projets' : 'projet') : ecosystem.projectCount > 1 ? 'projects' : 'project' }}
+          <span class="ecosystem__focus">{{ ecosystem.focus[locale] }}</span>
+          <span class="ecosystem__frameworks">
+            @for (framework of ecosystem.frameworks; track framework) {
+              <span>{{ framework }}</span>
+            }
           </span>
         </li>
       }

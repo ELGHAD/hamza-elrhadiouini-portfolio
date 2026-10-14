@@ -1,4 +1,4 @@
-import { afterNextRender, Component, inject, OnDestroy, signal } from '@angular/core';
+import { afterNextRender, Component, computed, inject, OnDestroy, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { HomeMetric } from '../../core/models/home.model';
 import {
@@ -8,14 +8,30 @@ import {
   HOME_METRICS,
   HOME_PROJECTS,
   HOME_SERVICES,
-  HOME_STACK,
 } from '../../core/data/home.data';
 import { PROFILE } from '../../core/data/profile.data';
 import { LocaleService } from '../../core/services/locale.service';
+import { ThemeService } from '../../core/services/theme.service';
 import { RevealDirective } from '../../shared/directives/reveal.directive';
 import { TestimonialsComponent } from '../../shared/components/testimonials/testimonials';
 import { ContactFormComponent } from '../../shared/components/contact-form/contact-form';
 import { JourneyTimelineComponent } from '../../shared/components/journey-timeline/journey-timeline';
+import { TechMarqueeComponent } from '../../shared/components/tech-marquee/tech-marquee';
+import { SpotlightDirective } from '../../shared/directives/spotlight.directive';
+import { TiltDirective } from '../../shared/directives/tilt.directive';
+
+/** Same value as the `sizes` attribute of the hero <img> in home.html. */
+const HERO_SIZES = '(max-width: 600px) calc(100vw - 2rem), (max-width: 900px) 40rem, 70vw';
+const HERO_IMAGES = {
+  dark: {
+    src: 'images/hamza-hero-1440.webp',
+    srcset: 'images/hamza-hero-720.webp 720w, images/hamza-hero-1440.webp 1440w',
+  },
+  light: {
+    src: 'images/hamza-hero-light-1120.webp',
+    srcset: 'images/hamza-hero-light-720.webp 720w, images/hamza-hero-light-1120.webp 1120w',
+  },
+} as const;
 
 /** Line icons for the facts strip (same 24×24 family as the skills page). */
 const METRIC_ICONS: Record<HomeMetric['icon'], string[]> = {
@@ -32,6 +48,9 @@ const METRIC_ICONS: Record<HomeMetric['icon'], string[]> = {
     TestimonialsComponent,
     ContactFormComponent,
     JourneyTimelineComponent,
+    TechMarqueeComponent,
+    SpotlightDirective,
+    TiltDirective,
   ],
   templateUrl: './home.html',
   styleUrl: './home.scss',
@@ -43,10 +62,16 @@ export class HomeComponent implements OnDestroy {
   readonly projects = HOME_PROJECTS.filter((item) => item.status === 'verified');
   readonly experiences = HOME_EXPERIENCES.filter((item) => item.status === 'verified');
   readonly education = HOME_EDUCATION;
-  readonly stack = HOME_STACK.filter((item) => item.status === 'verified');
   readonly certifications = HOME_CERTIFICATIONS.filter((item) => item.status === 'verified');
   readonly metrics = HOME_METRICS;
   readonly metricIcons = METRIC_ICONS;
+  private readonly theme = inject(ThemeService).theme;
+  /**
+   * Hero picture for the current theme: the original on its dark backdrop, or a light
+   * version whose edges fade to transparent (made from assets-src/hamza-hero-light.png).
+   * Only the picture of the active theme is downloaded.
+   */
+  readonly heroImage = computed(() => HERO_IMAGES[this.theme()]);
   readonly reducedMotion = signal(false);
   readonly typedRole = signal('Software Engineer');
   readonly metricValues = signal(this.metrics.map((metric) => metric.value));
@@ -85,8 +110,28 @@ export class HomeComponent implements OnDestroy {
     for (const frame of this.animationFrames) window.cancelAnimationFrame(frame);
   }
 
+  /**
+   * Loads the other theme's hero picture in the background once the page is idle, so a
+   * theme switch shows it at once (same srcset and sizes: the browser picks the same width).
+   */
+  private preloadOtherHero(): void {
+    const other = HERO_IMAGES[this.theme() === 'light' ? 'dark' : 'light'];
+    const load = (): void => {
+      const image = new Image();
+      image.sizes = HERO_SIZES;
+      image.srcset = other.srcset;
+      image.src = other.src;
+    };
+    if (typeof window.requestIdleCallback === 'function') {
+      window.requestIdleCallback(load, { timeout: 4000 });
+    } else {
+      window.setTimeout(load, 2500);
+    }
+  }
+
   private initializeMotion(): void {
     this.browserInitialized = true;
+    this.preloadOtherHero();
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     this.reducedMotion.set(prefersReducedMotion);
     if (!prefersReducedMotion) this.startRoleTyping();
@@ -152,7 +197,8 @@ export class HomeComponent implements OnDestroy {
     );
 
     const tick = (now: number): void => {
-      const progress = Math.min((now - start) / duration, 1);
+      // Clamped at 0: the first frame's timestamp can be slightly earlier than `start`.
+      const progress = Math.min(Math.max((now - start) / duration, 0), 1);
       const eased = 1 - Math.pow(1 - progress, 3);
       this.metricValues.update((values) =>
         values.map((current, position) =>

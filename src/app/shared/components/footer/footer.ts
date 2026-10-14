@@ -1,5 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
+import { Component, inject } from '@angular/core';
 import { BUILD_INFO } from '../../../../environments/build-info';
 import { RouterLink } from '@angular/router';
 import { PROFILE } from '../../../core/data/profile.data';
@@ -17,7 +16,6 @@ type PageLabel = 'projects' | 'services' | 'experience' | 'skills' | 'certificat
   styleUrl: './footer.scss',
 })
 export class FooterComponent {
-  private readonly document = inject(DOCUMENT);
   readonly localeService = inject(LocaleService);
   readonly profile = PROFILE;
   readonly copy = UI_COPY;
@@ -31,17 +29,4 @@ export class FooterComponent {
     { path: 'certifications', label: 'certifications' },
     { path: 'contact', label: 'contact' },
   ];
-
-  /** CV in the current language, when it has been published. */
-  readonly cv = computed(() => {
-    const file = this.localeService.locale() === 'fr' ? PROFILE.cvFr : PROFILE.cvEn;
-    return file.status === 'verified' ? file[this.localeService.locale()] : undefined;
-  });
-
-  /** Back to the top (smooth unless reduced motion, via the global scroll-behavior). */
-  scrollToTop(event: Event): void {
-    event.preventDefault();
-    this.document.defaultView?.scrollTo({ top: 0 });
-    this.document.getElementById('main-content')?.focus({ preventScroll: true });
-  }
 }

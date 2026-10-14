@@ -39,6 +39,8 @@ const FIELD_ORDER = ['name', 'email', 'message'] as const;
 export class ContactFormComponent {
   /** Prefix for element ids, so the form can appear on several pages without id clashes. */
   readonly idPrefix = input('contact');
+  /** No card of its own: for pages that already frame the form. */
+  readonly bare = input(false);
 
   private readonly formBuilder = inject(FormBuilder);
   private readonly emailService = inject(EmailService);
@@ -81,11 +83,36 @@ export class ContactFormComponent {
 
   private formOpenedAt = 0;
   private sentInMemory = false;
+  /** Opening line last written by startWith(), replaced while the visitor has not edited it. */
+  private lastIntro = '';
 
   constructor() {
     afterNextRender(() => {
       this.formOpenedAt = Date.now();
     });
+  }
+
+  /**
+   * Starts the message with an opening line (topic chips on the contact page), then puts
+   * the cursor after it. Never overwrites text the visitor typed.
+   */
+  startWith(intro: string): void {
+    const control = this.form.controls.message;
+    const current = control.value.trim();
+    if (current && current !== this.lastIntro.trim()) {
+      this.focusMessage();
+      return;
+    }
+    this.lastIntro = intro;
+    control.setValue(intro);
+    this.focusMessage();
+  }
+
+  private focusMessage(): void {
+    const field = this.host.nativeElement.querySelector<HTMLTextAreaElement>('textarea');
+    if (!field) return;
+    field.focus();
+    field.setSelectionRange(field.value.length, field.value.length);
   }
 
   fieldId(field: string): string {

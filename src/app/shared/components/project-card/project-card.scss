@@ -187,9 +187,23 @@
   }
 
   &__note {
+    min-height: 2.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
     color: var(--text-muted);
     font-family: 'JetBrains Mono Variable', monospace;
-    font-size: 0.66rem;
+    font-size: 0.7rem;
+
+    svg {
+      width: 0.85rem;
+      height: 0.85rem;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
   }
 
   &--standard {
