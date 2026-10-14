@@ -15,7 +15,7 @@
     justify-content: space-between;
   }
 
-  // Logo on its own, transparent background: the globe glows on hover and focus.
+  // Logo on its own, transparent background; app-logo handles its hover glow.
   &__logo {
     min-height: 2.75rem;
     display: inline-flex;
@@ -23,19 +23,6 @@
     border-radius: 0.5rem;
     color: var(--text);
     text-decoration: none;
-
-    .logo {
-      transition: filter 200ms ease;
-    }
-
-    &:hover .logo,
-    &:focus-visible .logo {
-      filter: drop-shadow(0 0 10px color-mix(in srgb, var(--accent) 45%, transparent));
-    }
-
-    &:hover .logo__word {
-      fill: var(--accent-text);
-    }
   }
 
   &__menu-btn {
@@ -154,46 +141,3 @@
   }
 }
 
-// ELGHAD globe logo: inline SVG so it follows the theme tokens.
-.logo {
-  display: block;
-  width: auto;
-  height: 2.9rem;
-  overflow: visible;
-
-  &__sphere {
-    fill: var(--accent-soft);
-    stroke: var(--accent);
-    stroke-width: 1.6;
-  }
-
-  &__grid {
-    fill: none;
-    stroke: color-mix(in srgb, var(--accent) 55%, transparent);
-    stroke-width: 0.8;
-  }
-
-  &__orbit {
-    fill: none;
-    stroke: color-mix(in srgb, var(--accent) 70%, transparent);
-    stroke-width: 1;
-  }
-
-  &__node {
-    fill: var(--accent-text);
-    transition: filter 200ms ease;
-  }
-
-  &__word {
-    fill: var(--text);
-    stroke: var(--bg);
-    stroke-width: 3.5;
-    stroke-linejoin: round;
-    paint-order: stroke;
-    font-family: 'Inter Variable', Inter, sans-serif;
-    font-size: 17px;
-    font-weight: 850;
-    letter-spacing: 1.4px;
-    transition: fill 200ms ease;
-  }
-}
